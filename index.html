@@ -49,9 +49,6 @@
     .sidebar-bottom { margin-top: auto; display: grid; gap: 10px; }
     .local-note { padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: #1a1417; color: var(--muted); font-size: 13px; line-height: 1.55; }
     .local-note strong { color: var(--green); display: block; margin-bottom: 3px; }
-    .backup-actions { display: flex; gap: 7px; }
-    .small-button { cursor: pointer; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: #c6b5ba; padding: 7px 9px; font-size: 13px; flex: 1; }
-    .small-button:hover { border-color: #8b4249; color: var(--text); }
     .main { min-width: 0; max-width: 100%; overflow-x: hidden; padding: 27px clamp(20px, 4vw, 58px) 60px; }
     .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; max-width: 1180px; margin: 0 auto 35px; }
     .breadcrumb { color: var(--muted); font-size: 14px; }
@@ -152,10 +149,6 @@
     .resource-list a:hover { text-decoration: underline; }
     .note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 12px; color: #ad999f; font-size: 12px; }
     .pill { padding: 3px 7px; border: 1px solid #53333a; border-radius: 20px; color: #ffaaa3; background: #2b191e; }
-    .note-actions { display: flex; gap: 5px; flex: 0 0 auto; }
-    .icon-button { cursor: pointer; border: 1px solid transparent; border-radius: 7px; color: #ab969c; background: transparent; padding: 5px 7px; font-size: 13px; }
-    .icon-button:hover { border-color: var(--line); color: var(--text); }
-    .icon-button.delete:hover { color: var(--red); }
     .note-source { color: var(--green); text-decoration: none; }
     .note-source:hover { text-decoration: underline; }
     .empty-state { padding: 42px 20px; text-align: center; border: 1px dashed #4a343a; border-radius: 13px; background: #151114; }
@@ -170,20 +163,6 @@
     .cve-meta { margin-top: 10px; color: #aa969b; font-size: 12px; }
     dialog { width: min(620px, calc(100% - 28px)); max-height: min(90vh, 850px); overflow-y: auto; border: 1px solid #54363d; border-radius: 15px; padding: 0; background: #191316; color: var(--text); box-shadow: 0 30px 100px #000a; }
     dialog::backdrop { background: #090608cc; backdrop-filter: blur(4px); }
-    .dialog-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 17px 20px; border-bottom: 1px solid var(--line); background: #191316; }
-    .dialog-head h2 { margin: 0; font-size: 17px; }
-    .dialog-body { display: grid; gap: 13px; padding: 19px 20px 21px; }
-    .field { display: grid; gap: 6px; }
-    .field label { color: #d0bec3; font-size: 13px; font-weight: 700; }
-    .field input, .field select, .field textarea { width: 100%; color: var(--text); border: 1px solid var(--line); border-radius: 8px; outline: 0; background: #120f11; padding: 9px 10px; font-size: 14px; }
-    .field textarea { min-height: 145px; resize: vertical; line-height: 1.6; }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: #d35c5d; box-shadow: 0 0 0 3px #ff514816; }
-    .field-hint { color: #a18d93; font-size: 12px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-    .dialog-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 0 20px 19px; }
-    .secondary-button { cursor: pointer; padding: 9px 13px; border: 1px solid var(--line); border-radius: 9px; color: #c6b5ba; background: transparent; font-size: 14px; }
-    .toast { position: fixed; z-index: 10; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; border: 1px solid #754047; border-radius: 9px; color: var(--text); background: #29191e; padding: 10px 14px; box-shadow: var(--shadow); font-size: 14px; transition: .2s; }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
     .mobile-menu { display: none; }
     @media (max-width: 850px) {
       .app { grid-template-columns: 220px minmax(0, 1fr); }
@@ -240,8 +219,7 @@
         </div>
       </nav>
       <div class="sidebar-bottom">
-        <div class="local-note"><strong>Личен дневник</strong>Данните се пазят локално в този браузър. Използвай резервно копие, за да ги прехвърлиш.</div>
-        <div class="backup-actions"><button class="small-button" id="export-button">↓ Резервно копие</button><button class="small-button" id="import-button">↑ Импортирай</button><input type="file" id="import-file" accept="application/json,.json" hidden></div>
+        <div class="local-note"><strong>Съдържание на проекта</strong>Бележките се обновяват чрез GitHub. Изпрати ми нов материал в чата, за да го добавя към проекта.</div>
       </div>
     </aside>
     <main class="main">
@@ -249,40 +227,19 @@
         <div class="breadcrumb"><button class="mobile-menu" id="mobile-menu" aria-label="Отвори меню">☰</button><span id="breadcrumb">Начало</span></div>
         <div class="top-actions">
           <div class="search-wrap"><span class="search-icon">⌕</span><input type="search" id="search" placeholder="Търси бележки…" aria-label="Търси бележки"></div>
-          <button class="primary-button" id="add-button"><span>＋</span> Добави</button>
         </div>
       </header>
       <div class="content" id="content"></div>
     </main>
   </div>
-  <dialog id="entry-dialog">
-    <form id="entry-form">
-      <div class="dialog-head"><h2 id="dialog-title">Нова бележка</h2><button type="button" class="icon-button" id="close-dialog" aria-label="Затвори">✕</button></div>
-      <div class="dialog-body">
-        <div class="field"><label for="entry-title">Заглавие</label><input id="entry-title" name="title" required maxlength="140" placeholder="Например: CVE-2024-21413"></div>
-        <div class="form-row">
-          <div class="field"><label for="entry-type">Вид материал</label><select id="entry-type" name="type"><option value="note">Обяснение / бележка</option><option value="command">Команда</option><option value="post">Публикация / статия</option><option value="cve">CVE</option></select></div>
-          <div class="field" id="topic-field"><label for="entry-topic">Тема</label><input id="entry-topic" name="topic" list="topic-options" placeholder="Metasploit, Linux, Networking…" value="Metasploit"><datalist id="topic-options"><option value="Metasploit"><option value="Linux"><option value="Networking"><option value="Web"><option value="TryHackMe"></datalist></div>
-        </div>
-        <div class="form-row">
-          <div class="field"><label for="entry-source-name">Източник</label><select id="entry-source-name" name="sourceName"><option value="">Не е посочен</option><option>TryHackMe</option><option>YouTube</option><option>Reddit</option><option>X</option><option>Друга платформа</option></select></div>
-          <div class="field"><label for="entry-url">Линк към източника</label><input id="entry-url" name="url" type="url" placeholder="https://…"></div>
-        </div>
-        <div class="field"><label for="entry-content">Съдържание на български</label><textarea id="entry-content" name="content" required placeholder="Добави преведения и подреден материал тук. Запази техническите термини, когато е уместно."></textarea><div class="field-hint">Командите се запазват дословно. CVE се показват като отделни страници в раздела CVE.</div></div>
-      </div>
-      <div class="dialog-footer"><button type="button" class="secondary-button" id="cancel-dialog">Отказ</button><button type="submit" class="primary-button">Запази бележката</button></div>
-    </form>
-  </dialog>
   <dialog id="image-viewer" aria-label="Преглед на изображение">
     <button type="button" class="image-viewer-close" id="image-viewer-close" aria-label="Затвори">✕</button>
     <img id="image-viewer-image" alt="">
     <figcaption id="image-viewer-caption"></figcaption>
   </dialog>
-  <div class="toast" id="toast" role="status"></div>
   <script src="metasploit-notes.js"></script>
   <script>
-    // Бележките, подадени в чата, се добавят тук. При следващо отваряне новите записи
-    // се обединяват с локалните, така че личните бележки в браузъра да се запазят.
+    // Бележките, подадени в чата, се съхраняват в source файловете на проекта.
     const CHAT_ENTRIES = [{
       id: "cve-2024-21413",
       title: "CVE-2024-21413 — Microsoft Outlook (Moniker Link)",
@@ -422,27 +379,14 @@ finally:
         ] }
       ]
     }, ...(window.METASPLOIT_ENTRIES || [])];
-    const STORAGE_KEY = "cybersecurity-notebook-v1";
     const TYPE_LABELS = { note: "Бележка", command: "Команда", post: "Публикация", cve: "CVE" };
     const TYPE_ICONS = { note: "▧", command: "⌘", post: "▤", cve: "⌕" };
-    let entries = loadEntries();
+    const entries = CHAT_ENTRIES;
     let currentPage = "home";
     let activeTab = "overview";
     let searchQuery = "";
-    let editingId = null;
-    let toastTimer;
     let imageViewerPosition = { x: 0, y: 0, trigger: null, bodyStyles: null, htmlOverflow: "" };
 
-    function loadEntries() {
-      let saved = [];
-      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { saved = []; }
-      const byId = new Map(saved.map(item => [item.id, item]));
-      CHAT_ENTRIES.forEach(item => byId.set(item.id, { ...byId.get(item.id), ...item }));
-      const merged = [...byId.values()];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      return merged;
-    }
-    function saveEntries() { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); render(); }
     function slug(value) { return String(value || "").trim().toLocaleLowerCase("bg").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "tema"; }
     function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]); }
     function safeUrl(value) { try { const url = new URL(value); return ["http:", "https:"].includes(url.protocol) ? url.href : ""; } catch { return ""; } }
@@ -537,11 +481,11 @@ finally:
       const link = safeUrl(item.url);
       const meta = [TYPE_LABELS[item.type] || TYPE_LABELS.note, item.topic && !isCve(item) ? item.topic : "", item.sourceName || "", item.createdAt || ""].filter(Boolean);
       const body = Array.isArray(item.blocks) ? renderBlocks(item.blocks) : `<p>${escapeHtml(item.content)}</p>`;
-      return `<article class="note-card"><div class="note-top"><h3>${escapeHtml(item.title)}</h3><div class="note-actions"><button class="icon-button" data-edit="${escapeHtml(item.id)}" aria-label="Редактирай">Редактирай</button><button class="icon-button delete" data-delete="${escapeHtml(item.id)}" aria-label="Изтрий">Изтрий</button></div></div><div class="note-body">${body}</div><div class="note-meta">${meta.map(label => `<span class="pill">${escapeHtml(label)}</span>`).join("")}${link ? `<a class="note-source" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Отвори източника ↗</a>` : ""}</div></article>`;
+      return `<article class="note-card"><div class="note-top"><h3>${escapeHtml(item.title)}</h3></div><div class="note-body">${body}</div><div class="note-meta">${meta.map(label => `<span class="pill">${escapeHtml(label)}</span>`).join("")}${link ? `<a class="note-source" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer">Отвори източника ↗</a>` : ""}</div></article>`;
     }
     function listMarkup(list, emptyTitle, emptyCopy) {
       const items = filtered(list);
-      if (!items.length) return `<div class="empty-state"><div class="empty-icon">⌘</div><h3>${searchQuery ? "Няма намерени резултати" : escapeHtml(emptyTitle)}</h3><p>${searchQuery ? "Промени думата за търсене или избери друг раздел." : escapeHtml(emptyCopy)}</p>${searchQuery ? "" : `<button class="primary-button" data-add-here><span>＋</span> Добави материал</button>`}</div>`;
+      if (!items.length) return `<div class="empty-state"><div class="empty-icon">⌘</div><h3>${searchQuery ? "Няма намерени резултати" : escapeHtml(emptyTitle)}</h3><p>${searchQuery ? "Промени думата за търсене или избери друг раздел." : escapeHtml(emptyCopy)}</p></div>`;
       return `<div class="note-list">${items.map(noteCard).join("")}</div>`;
     }
     function topicTabs() {
@@ -552,15 +496,15 @@ finally:
       entries.filter(item => !isCve(item)).forEach(item => { const topic = niceTopic(item.topic); topics.set(topic, (topics.get(topic) || 0) + 1); });
       const cards = [{ name: "Metasploit", count: countForTopic("Metasploit"), icon: "◈", desc: "Обяснения, команди и публикации за Metasploit." }, ...[...topics.keys()].filter(name => name.toLocaleLowerCase("bg") !== "metasploit").map(name => ({ name, count: topics.get(name), icon: "◌", desc: `Събрани бележки и материали по ${name}.` }))];
       const totalCves = entries.filter(isCve).length;
-      return `<section class="hero"><div class="eyebrow">ТВОЯТ ЛИЧЕН КИБЕР ДНЕВНИК</div><h1>Учи. Подреждай.<br>Връщай се към важното.</h1><p class="hero-copy">Едно място за знания от TryHackMe, YouTube, Reddit, X и други източници. Изпращай ми материалите в чата — ще ги превеждам на български и ще ги добавям в правилния раздел.</p><div class="hero-footer"><span class="pulse"></span> Работи локално в браузъра ти <span>·</span> Няма нужда от акаунт</div></section>
+      return `<section class="hero"><div class="eyebrow">ТВОЯТ ЛИЧЕН КИБЕР ДНЕВНИК</div><h1>Учи. Подреждай.<br>Връщай се към важното.</h1><p class="hero-copy">Едно място за знания от TryHackMe, YouTube, Reddit, X и други източници. Изпращай ми материалите в чата — ще ги превеждам на български и ще ги добавям в правилния раздел.</p><div class="hero-footer"><span class="pulse"></span> Публикувано чрез GitHub Pages <span>·</span> Съдържанието се обновява чрез GitHub</div></section>
       <section class="stats"><div class="stat-card"><div class="stat-value">${entries.length}</div><div class="stat-label">запазени материала</div></div><div class="stat-card"><div class="stat-value">${topics.size + (topics.has("Metasploit") ? 0 : 1)}</div><div class="stat-label">теми</div></div><div class="stat-card"><div class="stat-value">${totalCves}</div><div class="stat-label">CVE записа</div></div></section>
       <section><div class="section-heading"><div><h2>Теми</h2><p>Избери тема, за да разгледаш подредените материали.</p></div></div><div class="topic-grid">${cards.map(card => `<button class="topic-card" data-open-topic="${escapeHtml(card.name)}"><div class="topic-card-top"><span class="topic-symbol">${card.icon}</span><span class="topic-arrow">↗</span></div><h3>${escapeHtml(card.name)}</h3><p>${escapeHtml(card.desc)}</p><div class="topic-meta"><span>${card.count} материала</span><span>Отвори тема</span></div></button>`).join("")}<button class="topic-card" data-page="cves"><div class="topic-card-top"><span class="topic-symbol">⌕</span><span class="topic-arrow">↗</span></div><h3>CVE</h3><p>Уязвимости, описания и полезни препратки.</p><div class="topic-meta"><span>${totalCves} CVE записа</span><span>Отвори раздел</span></div></button></div></section>`;
     }
     function cvePage() {
       const unique = [...new Map(entries.filter(isCve).map(item => [cveId(item), item])).values()].sort((a, b) => cveId(a).localeCompare(cveId(b)));
       const cards = filtered(unique);
-      const body = cards.length ? `<div class="cve-list">${cards.map(item => `<button class="cve-item" data-page="cve:${encodeURIComponent(cveId(item))}"><div class="cve-id">${escapeHtml(cveId(item))}</div><div class="cve-summary">${escapeHtml((item.content || "Няма добавено описание.").slice(0, 130))}</div><div class="cve-meta">Отвори записа →</div></button>`).join("")}</div>` : `<div class="empty-state"><div class="empty-icon">⌕</div><h3>${searchQuery ? "Няма намерени CVE записи" : "Все още няма CVE записи"}</h3><p>${searchQuery ? "Промени думата за търсене." : "Когато ми изпратиш информация за CVE, ще добавя отделен подтаб за него тук."}</p>${searchQuery ? "" : `<button class="primary-button" data-add-cve><span>＋</span> Добави CVE</button>`}</div>`;
-      return `<div class="page-head"><div class="eyebrow">БАЗА ЗНАНИЯ</div><h1>CVE</h1><p>Всеки CVE има собствен подтаб с описание, бележки и линкове към източника.</p></div><div class="content-toolbar"><p>${unique.length} записа</p><button class="primary-button" data-add-cve><span>＋</span> Добави CVE</button></div>${body}`;
+      const body = cards.length ? `<div class="cve-list">${cards.map(item => `<button class="cve-item" data-page="cve:${encodeURIComponent(cveId(item))}"><div class="cve-id">${escapeHtml(cveId(item))}</div><div class="cve-summary">${escapeHtml((item.content || "Няма добавено описание.").slice(0, 130))}</div><div class="cve-meta">Отвори записа →</div></button>`).join("")}</div>` : `<div class="empty-state"><div class="empty-icon">⌕</div><h3>${searchQuery ? "Няма намерени CVE записи" : "Все още няма CVE записи"}</h3><p>${searchQuery ? "Промени думата за търсене." : "Изпрати ми информация за CVE в чата, за да добавя нов запис към проекта."}</p></div>`;
+      return `<div class="page-head"><div class="eyebrow">БАЗА ЗНАНИЯ</div><h1>CVE</h1><p>Всеки CVE има собствен подтаб с описание, бележки и линкове към източника.</p></div><div class="content-toolbar"><p>${unique.length} записа</p></div>${body}`;
     }
     function render() {
       syncSidebar();
@@ -576,17 +520,17 @@ finally:
           const type = activeTab === "commands" ? "command" : activeTab === "posts" ? "post" : "note";
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit" && (item.type === type || (activeTab === "overview" && !["command", "post"].includes(item.type))));
           const titles = { overview: ["Тук ще събираме информация за Metasploit.", "Изпрати ми обяснение или учебна бележка за Metasploit — ще я преведа на български и ще я подредя тук."], commands: ["Все още няма команди.", "Когато ми изпратиш команда, ще я добавя тук с обяснение на български, като запазя синтаксиса ѝ."], posts: ["Все още няма публикации.", "Статии, видеа и постове за Metasploit ще се събират в този раздел с линк към оригиналния източник."] };
-          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Материалите са разделени по тип, за да намираш лесно обясненията, командите и публикациите.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${TYPE_LABELS[type].toLocaleLowerCase("bg")}</p><button class="primary-button" data-add-topic="Metasploit" data-add-type="${type}"><span>＋</span> Добави материал</button></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Материалите са разделени по тип, за да намираш лесно обясненията, командите и публикациите.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${TYPE_LABELS[type].toLocaleLowerCase("bg")}</p></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
         } else {
           breadcrumb = topic;
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg"));
-          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>${escapeHtml(topic)}</h1><p>Бележки, команди и публикации по тази тема.</p></div><div class="content-toolbar"><p>${list.length} материала</p><button class="primary-button" data-add-topic="${escapeHtml(topic)}"><span>＋</span> Добави материал</button></div>${listMarkup(list, "Тук още няма материали.", `Изпрати ми информация за ${topic} и ще я добавя в този раздел.`)}`;
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>${escapeHtml(topic)}</h1><p>Бележки, команди и публикации по тази тема.</p></div><div class="content-toolbar"><p>${list.length} материала</p></div>${listMarkup(list, "Тук още няма материали.", `Изпрати ми информация за ${topic} в чата, за да я добавя в този раздел.`)}`;
         }
       } else if (currentPage === "cves") { breadcrumb = "CVE"; html = cvePage(); }
       else if (currentPage.startsWith("cve:")) {
         const id = decodeURIComponent(currentPage.slice(4)); breadcrumb = `CVE / ${id}`;
         const item = entries.find(entry => isCve(entry) && cveId(entry) === id);
-        html = `<div class="page-head"><div class="eyebrow">УЯЗВИМОСТ</div><h1>${escapeHtml(id)}</h1><p>Бележки и източници, събрани за този CVE.</p></div><div class="content-toolbar"><p>Индивидуален CVE запис</p><button class="primary-button" data-edit="${escapeHtml(item?.id || "")}"><span>＋</span> Допълни записа</button></div>${item ? listMarkup([item], "", "") : `<div class="empty-state"><h3>Този CVE запис липсва.</h3><p>Добави информация, за да създадеш записа.</p><button class="primary-button" data-add-cve>＋ Добави CVE</button></div>`}`;
+        html = `<div class="page-head"><div class="eyebrow">УЯЗВИМОСТ</div><h1>${escapeHtml(id)}</h1><p>Бележки и източници, събрани за този CVE.</p></div><div class="content-toolbar"><p>Индивидуален CVE запис</p></div>${item ? listMarkup([item], "", "") : `<div class="empty-state"><h3>Този CVE запис липсва.</h3><p>Изпрати информацията в чата, за да добавя записа към проекта.</p></div>`}`;
       } else if (currentPage === "all-posts") {
         breadcrumb = "Всички публикации"; const list = entries.filter(item => item.type === "post");
         html = `<div class="page-head"><div class="eyebrow">ИЗТОЧНИЦИ</div><h1>Всички публикации</h1><p>Статии, видеа и постове от различни платформи, подредени по тема.</p></div>${listMarkup(list, "Все още няма публикации.", "Изпрати ми статия, видео или пост; ще добавя записа към темата и ще запазя източника.")}`;
@@ -598,12 +542,7 @@ finally:
       content.innerHTML = html;
       content.querySelectorAll("[data-tab]").forEach(button => button.onclick = () => { activeTab = button.dataset.tab; currentPage = `topic:metasploit:${activeTab}`; render(); });
       content.querySelectorAll("[data-open-topic]").forEach(button => button.onclick = () => { const topic = button.dataset.openTopic; currentPage = `topic:${topic}${topic.toLocaleLowerCase("bg") === "metasploit" ? ":overview" : ""}`; activeTab = "overview"; render(); });
-      content.querySelectorAll("[data-add-here]").forEach(button => button.onclick = () => openDialog());
-      content.querySelectorAll("[data-add-topic]").forEach(button => button.onclick = () => openDialog(null, { topic: button.dataset.addTopic, type: button.dataset.addType || "note" }));
-      content.querySelectorAll("[data-add-cve]").forEach(button => button.onclick = () => openDialog(null, { type: "cve", topic: "CVE" }));
       content.querySelectorAll("[data-page]").forEach(button => button.onclick = () => { currentPage = button.dataset.page; render(); });
-      content.querySelectorAll("[data-edit]").forEach(button => button.onclick = () => { const item = entries.find(entry => entry.id === button.dataset.edit); if (item) openDialog(item); else openDialog(null, { type: "cve", topic: "CVE" }); });
-      content.querySelectorAll("[data-delete]").forEach(button => button.onclick = () => deleteEntry(button.dataset.delete));
       content.querySelectorAll("[data-image-preview]").forEach(button => button.onclick = () => {
         const viewer = document.getElementById("image-viewer");
         const image = document.getElementById("image-viewer-image");
@@ -628,25 +567,6 @@ finally:
         document.getElementById("image-viewer-close").focus({ preventScroll: true });
       });
     }
-    function openDialog(item = null, defaults = {}) {
-      editingId = item?.id || null;
-      const form = document.getElementById("entry-form"); form.reset();
-      document.getElementById("dialog-title").textContent = item ? "Редактирай бележка" : "Нова бележка";
-      form.elements.title.value = item?.title || "";
-      form.elements.type.value = item?.type || defaults.type || "note";
-      form.elements.topic.value = item?.topic || defaults.topic || "Metasploit";
-      form.elements.sourceName.value = item?.sourceName || "";
-      form.elements.url.value = item?.url || "";
-      form.elements.content.value = item?.content || "";
-      document.getElementById("entry-dialog").showModal();
-      setTopicVisibility();
-    }
-    function setTopicVisibility() { const isCveType = document.getElementById("entry-type").value === "cve"; document.getElementById("topic-field").hidden = isCveType; if (isCveType) document.getElementById("entry-topic").value = "CVE"; }
-    function deleteEntry(id) { if (!confirm("Да изтрия ли тази бележка?")) return; entries = entries.filter(item => item.id !== id); saveEntries(); showToast("Бележката е изтрита."); }
-    function showToast(message) { const toast = document.getElementById("toast"); toast.textContent = message; toast.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove("show"), 2500); }
-
-    document.getElementById("add-button").onclick = () => openDialog();
-    document.getElementById("close-dialog").onclick = document.getElementById("cancel-dialog").onclick = () => document.getElementById("entry-dialog").close();
     document.getElementById("image-viewer-close").onclick = () => document.getElementById("image-viewer").close();
     document.getElementById("image-viewer").onclick = event => { if (event.target === event.currentTarget) event.currentTarget.close(); };
     document.getElementById("image-viewer").addEventListener("close", () => {
@@ -664,20 +584,8 @@ finally:
       requestAnimationFrame(() => window.scrollTo(x, y));
       setTimeout(() => window.scrollTo(x, y), 0);
     });
-    document.getElementById("entry-type").onchange = setTopicVisibility;
-    document.getElementById("entry-form").onsubmit = event => {
-      event.preventDefault(); const form = event.currentTarget; const type = form.elements.type.value;
-      const title = form.elements.title.value.trim();
-      const item = { id: editingId || `entry-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, title, type, topic: type === "cve" ? "CVE" : (form.elements.topic.value.trim() || "Общи"), sourceName: form.elements.sourceName.value, url: safeUrl(form.elements.url.value.trim()), content: form.elements.content.value.trim(), createdAt: new Date().toLocaleDateString("bg-BG") };
-      if (type === "cve" && !/^CVE-\d{4}-\d{4,}$/i.test(title)) { alert("За CVE заглавието използвай формат CVE-ГГГГ-номер, например CVE-2024-21413."); return; }
-      if (editingId) entries = entries.map(entry => entry.id === editingId ? { ...entry, ...item } : entry); else entries.unshift(item);
-      saveEntries(); document.getElementById("entry-dialog").close(); showToast(editingId ? "Промените са запазени." : "Материалът е добавен.");
-    };
     document.getElementById("search").oninput = event => { searchQuery = event.target.value; render(); };
     document.getElementById("mobile-menu").onclick = () => document.getElementById("sidebar").classList.toggle("open");
-    document.getElementById("export-button").onclick = () => { const blob = new Blob([JSON.stringify(entries, null, 2)], { type: "application/json" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "cybersecurity-notebook-backup.json"; link.click(); URL.revokeObjectURL(link.href); };
-    document.getElementById("import-button").onclick = () => document.getElementById("import-file").click();
-    document.getElementById("import-file").onchange = async event => { const file = event.target.files[0]; if (!file) return; try { const imported = JSON.parse(await file.text()); if (!Array.isArray(imported) || imported.some(item => !item.title || !item.content)) throw new Error("format"); const byId = new Map(entries.map(item => [item.id, item])); imported.forEach(item => byId.set(item.id || `import-${Math.random()}`, item)); entries = [...byId.values()]; saveEntries(); showToast("Резервното копие е импортирано."); } catch { alert("Файлът не е валидно резервно копие на бележника."); } event.target.value = ""; };
     render();
   </script>
 </body>
