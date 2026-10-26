@@ -210,8 +210,8 @@
           <div class="subnav" id="metasploit-subnav">
             <button class="subnav-button" data-page="topic:metasploit:overview">Представлява</button>
             <button class="subnav-button" data-page="topic:metasploit:commands">Команди</button>
-            <button class="subnav-button" data-page="topic:metasploit:posts">Публикации</button>
             <button class="subnav-button" data-page="topic:metasploit:meterpreter">Meterpreter</button>
+            <button class="subnav-button" data-page="topic:metasploit:posts">Публикации</button>
           </div>
           <button class="nav-button" data-page="cves"><span class="nav-icon">⌕</span>CVE <span class="nav-count" id="cve-count">0</span></button>
           <div class="subnav" id="cve-subnav"></div>
@@ -490,7 +490,7 @@ finally:
       return `<div class="note-list">${items.map(noteCard).join("")}</div>`;
     }
     function topicTabs() {
-      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button><button class="tab-button ${activeTab === "meterpreter" ? "active" : ""}" data-tab="meterpreter">Meterpreter</button></div>`;
+      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "meterpreter" ? "active" : ""}" data-tab="meterpreter">Meterpreter</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button></div>`;
     }
     function homePage() {
       const topics = new Map();
