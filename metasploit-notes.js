@@ -391,5 +391,187 @@ window.METASPLOIT_ENTRIES = [
         "Примерите от материала обхващат Linux ELF, Windows EXE, PHP, ASP и Python."
       ] }
     ]
+  },
+  {
+    id: "metasploit-meterpreter-overview",
+    title: "Meterpreter: предназначение и начин на работа",
+    type: "note",
+    topic: "Metasploit",
+    sourceName: "TryHackMe",
+    url: "https://tryhackme.com/room/meterpreter",
+    createdAt: "26.10.2026",
+    content: "Обяснение какво представлява Meterpreter, как работи в паметта на целевата система, как се различават версиите му и как се избира подходящ payload.",
+    blocks: [
+      { type: "heading", text: "Какво представлява Meterpreter" },
+      { type: "paragraph", text: "Meterpreter е payload на Metasploit, който подпомага penetration testing с различни инструменти. Той работи на целевата система като агент в архитектура тип command and control (C2). Чрез него може да се взаимодейства с операционната система и файловете, както и да се използват специализираните му команди." },
+      { type: "heading", text: "Как работи" },
+      { type: "paragraph", text: "Обикновено Meterpreter не се инсталира като обикновена програма и не записва самостоятелен Meterpreter файл на диска. Той работи в RAM като процес. Това може да намали следите от отделен payload файл, но не го прави невидим: антивирусният софтуер може да разпознава Meterpreter, а процесът и поведението му могат да бъдат анализирани." },
+      { type: "paragraph", text: "Комуникацията с Metasploit може да използва криптиран TLS канал. Ако мрежовите защитни системи не декриптират трафика, те имат по-малко видимост върху съдържанието му; криптирането само по себе си не гарантира, че дейността няма да бъде открита." },
+      { type: "heading", text: "Процесът, в който работи Meterpreter" },
+      { type: "paragraph", text: "Meterpreter може да работи вътре в съществуващ процес, затова името на процеса не е задължително да е meterpreter.exe. В примерния изход getpid връща PID 1304, а ps показва, че този PID принадлежи на spoolsv.exe. PID (Process Identifier) е уникалният идентификатор, с който операционната система обозначава работещ процес." },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > getpid",
+        "Current pid: 1304",
+        "",
+        "meterpreter > ps",
+        "PID   PPID  Name        Arch  User                Path",
+        "1304  692   spoolsv.exe x64   NT AUTHORITY\\SYSTEM C:\\Windows\\System32\\spoolsv.exe",
+        "",
+        "C:\\Windows\\system32> tasklist /m /fi \"pid eq 1304\"",
+        "Image Name   PID   Modules",
+        "spoolsv.exe  1304  ntdll.dll, kernel32.dll, ..."
+      ].join("\n") },
+      { type: "paragraph", text: "При проверка на заредените DLLs в този пример не се вижда файл с име meterpreter.dll. Това и името на процеса сами по себе си не доказват дали процесът е легитимен или компрометиран." },
+      { type: "heading", text: "Inline и staged варианти" },
+      { type: "paragraph", text: "Meterpreter payloads се предлагат като inline (single) и staged варианти. При staged payload първо се изпраща по-малък stager, който установява канал и получава останалата част — stage. При inline payload целият payload се изпраща наведнъж." },
+      { type: "table", headers: ["Пример", "Вариант"], rows: [
+        ["generic/shell_reverse_tcp", "Inline / single: долната черта между shell и reverse показва един payload."],
+        ["windows/x64/shell/reverse_tcp", "Staged: наклонената черта между shell и reverse показва отделни stager и stage компоненти."]
+      ] },
+      { type: "heading", text: "Налични версии и избор" },
+      { type: "paragraph", text: "Meterpreter има варианти за Android, Apple iOS, Java, Linux, macOS, PHP, Python и Windows. Списъкът може да се филтрира чрез msfvenom. Избраният payload зависи от платформата и архитектурата на целта, наличните компоненти (например Python или PHP), възможните мрежови връзки — raw TCP, HTTPS или IPv6 — и съвместимостта с избрания exploit." },
+      { type: "code", language: "Linux Shell", text: [
+        "msfvenom --list payloads | grep meterpreter"
+      ].join("\n") },
+      { type: "paragraph", text: "Когато Meterpreter се използва чрез exploit module, изборът може да е ограничен до съвместимите payloads. Например MS17-010 EternalBlue може да избере windows/x64/meterpreter/reverse_tcp по подразбиране. Съвместимите варианти се виждат с show payloads." },
+      { type: "code", language: "Metasploit Console · Linux", text: [
+        "msf6 > use exploit/windows/smb/ms17_010_eternalblue",
+        "[*] Using configured payload windows/x64/meterpreter/reverse_tcp",
+        "msf6 exploit(windows/smb/ms17_010_eternalblue) > show payloads"
+      ].join("\n") },
+      { type: "heading", text: "Групи инструменти" },
+      { type: "list", items: [
+        "Built-in commands — основните команди, включени в Meterpreter.",
+        "Meterpreter tools — допълнителни инструменти, налични според конкретната версия.",
+        "Meterpreter scripting — възможности за изпълнение на скриптове. Командите и категориите се различават според платформата и заредените extensions."
+      ] },
+      { type: "paragraph", text: "Командите може да са групирани като Core, File system, Networking, System, User interface, Webcam, Audio output, Elevate, Password database и Timestomp. Провери help в конкретната сесия, защото наличните функции зависят от версията, платформата и средата." },
+      { type: "heading", text: "Свързани материали" },
+      { type: "links", items: [
+        { label: "Introduction to Metasploit", url: "https://www.tryhackme.com/jr/metasploitintro" },
+        { label: "Scanning and Exploitation with Metasploit", url: "https://www.tryhackme.com/jr/metasploitexploitation" }
+      ] }
+    ]
+  },
+  {
+    id: "metasploit-commands-meterpreter",
+    title: "Meterpreter: команди и работа със сесии",
+    type: "command",
+    topic: "Metasploit",
+    sourceName: "TryHackMe",
+    url: "https://tryhackme.com/room/meterpreter",
+    createdAt: "26.10.2026",
+    content: "Справка за основните Meterpreter команди, управление на сесии, работа с файлове, процеси и допълнителни extensions.",
+    blocks: [
+      { type: "heading", text: "Покажи наличните команди" },
+      { type: "paragraph", text: "Изпълни help в Meterpreter prompt, за да видиш командите и категориите, налични в текущата сесия. Различните Meterpreter варианти предлагат различен набор от команди." },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > help",
+        "Core Commands",
+        "=============",
+        "?          Help menu",
+        "background Backgrounds the current session",
+        "exit       Terminate the Meterpreter session",
+        "getpid     Shows the current process identifier",
+        "getuid     Shows the user that Meterpreter is running as",
+        "load       Loads one or more Meterpreter extensions",
+        "migrate    Moves Meterpreter to another process",
+        "sessions   Quickly switch to another session"
+      ].join("\n") },
+      { type: "heading", text: "Основни команди" },
+      { type: "table", headers: ["Команда", "Предназначение"], rows: [
+        ["background / bg", "Поставя текущата Meterpreter сесия във фонов режим."],
+        ["exit", "Затваря текущата Meterpreter сесия."],
+        ["guid", "Показва GUID (Globally Unique Identifier) на сесията."],
+        ["help", "Показва наличните команди."],
+        ["info", "Показва информация за Post module."],
+        ["irb", "Отваря интерактивна Ruby конзола за текущата сесия."],
+        ["load", "Зарежда Meterpreter extension."],
+        ["migrate <PID>", "Премества Meterpreter към друг процес."],
+        ["run", "Изпълнява Meterpreter script или Post module."],
+        ["sessions", "Изброява сесиите или позволява превключване към друга."]
+      ] },
+      { type: "heading", text: "Файлова система, мрежа и система" },
+      { type: "table", headers: ["Категория", "Команди и предназначение"], rows: [
+        ["Файлова система", "cd сменя директорията; ls или dir изброява файлове; pwd показва текущата директория; cat показва файл; edit редактира файл; search търси; rm изтрива; upload и download прехвърлят файлове."],
+        ["Мрежа", "arp показва ARP cache; ifconfig изброява интерфейсите; netstat показва мрежовите връзки; portfwd препраща локален порт към отдалечена услуга; route показва или променя routing table."],
+        ["Система", "execute изпълнява команда; getpid показва PID; getuid показва потребителя; ps изброява процесите; kill и pkill прекратяват процеси; sysinfo показва системна информация; shell отваря обикновен command shell; reboot и shutdown рестартират или изключват системата."],
+        ["Сесия", "background или Ctrl+Z връща към msfconsole, без да затваря сесията; sessions изброява активните; sessions -i <ID> отваря избраната сесия." ]
+      ] },
+      { type: "heading", text: "Проверка на потребител и процеси" },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > getuid",
+        "Server username: NT AUTHORITY\\SYSTEM",
+        "",
+        "meterpreter > getpid",
+        "Current pid: 1304",
+        "",
+        "meterpreter > ps",
+        "PID   PPID  Name        Arch  User",
+        "716   596   lsass.exe   x64   NT AUTHORITY\\SYSTEM",
+        "1304  692   spoolsv.exe x64   NT AUTHORITY\\SYSTEM"
+      ].join("\n") },
+      { type: "paragraph", text: "PID е номерът на процеса, в който работи сесията. При migrate се подава PID на друг процес. Изборът на процес може да промени стабилността на сесията или потребителския контекст; ако се премине към процес с по-ниски права, наличните привилегии може да се променят." },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > migrate 716",
+        "[*] Migrating from 1304 to 716...",
+        "[*] Migration completed successfully."
+      ].join("\n") },
+      { type: "heading", text: "Търсене на файлове и отваряне на shell" },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > search -f flag2.txt",
+        "Found 1 result...",
+        "c:\\Windows\\System32\\config\\flag2.txt (34 bytes)",
+        "",
+        "meterpreter > shell",
+        "Process 2124 created.",
+        "Channel 1 created.",
+        "C:\\Windows\\system32>"
+      ].join("\n") },
+      { type: "paragraph", text: "shell отваря обикновен команден ред на целевата система. Ctrl+Z може да върне управлението към Meterpreter prompt." },
+      { type: "heading", text: "Допълнителни extensions" },
+      { type: "paragraph", text: "Командата load добавя extensions и може да разшири менюто help. След зареждане изпълни help отново, за да видиш новите команди. Например load python добавя Python функции; учебният пример по-долу изпълнява безвреден print." },
+      { type: "code", language: "Meterpreter · Windows", text: [
+        "meterpreter > load python",
+        "Loading extension python...Success.",
+        "meterpreter > python_execute \"print 'Meterpreter example'\"",
+        "[+] Content written to stdout:",
+        "Meterpreter example",
+        "",
+        "meterpreter > load kiwi",
+        "Loading extension kiwi...",
+        "Success."
+      ].join("\n") },
+      { type: "paragraph", text: "Kiwi добавя команди за работа с credential и Kerberos данни. Сред тях са creds_all, creds_kerberos, creds_msv, creds_ssp, creds_tspkg, creds_wdigest, dcsync, dcsync_ntlm, golden_ticket_create, kerberos_ticket_list, kerberos_ticket_purge, kerberos_ticket_use, kiwi_cmd, lsa_dump_sam, lsa_dump_secrets, password_change, wifi_list и wifi_list_shared. Наличните команди зависят от платформата, правата и версията. Провери help след зареждането на extension." },
+      { type: "heading", text: "Други команди, показани в help" },
+      { type: "table", headers: ["Група", "Команди от материала"], rows: [
+        ["User interface", "idletime показва времето на бездействие; keyscan_start, keyscan_stop и keyscan_dump управляват заснемането и показването на буфера от натискания на клавиши; screenshare и screenshot показват или заснемат работния плот."],
+        ["Audio и webcam", "record_mic записва звук за зададен период; webcam_list изброява камерите; webcam_snap прави снимка; webcam_stream показва видео поток; webcam_chat стартира видео чат."],
+        ["Elevate и password database", "getsystem опитва повишаване до Local System; hashdump извлича записи от Windows SAM database."],
+        ["Системни логове", "clearev изчиства event logs и записите от системния журнал."]
+      ] },
+      { type: "paragraph", text: "Наличието на команда в help не означава, че тя ще работи във всяка среда. Например системата може да няма webcam или графична среда. Windows SAM database съхранява password hashes във формат NTLM. hashdump показва тези записи; Pass-the-Hash е техника, при която NTLM hash се използва за authentication без въвеждане на plaintext password." },
+      { type: "heading", text: "Управление на сесии" },
+      { type: "paragraph", text: "След установяване на връзка се създава session. background или Ctrl+Z връща към msfconsole, като оставя сесията активна. sessions -l изброява активните сесии, а sessions -i <ID> отваря избраната. sessions -h показва и опциите за взаимодействие, преименуване, прекратяване и изпълнение на команди върху сесии." },
+      { type: "code", language: "Metasploit Console · Linux", text: [
+        "meterpreter > background",
+        "[*] Backgrounding session 2...",
+        "msf6 > sessions -l",
+        "Active sessions",
+        "===============",
+        "1  meterpreter x64/windows  NT AUTHORITY\\SYSTEM @ JON-PC",
+        "2  meterpreter x64/windows  NT AUTHORITY\\SYSTEM @ JON-PC",
+        "",
+        "msf6 > sessions -i 2",
+        "[*] Starting interaction with 2...",
+        "meterpreter >"
+      ].join("\n") },
+      { type: "list", items: [
+        "post-exploitation: събиране на допълнителна информация за целевата система.",
+        "Проверка за интересни файлове, потребителски данни и мрежови интерфейси.",
+        "Оценяване на възможностите за privilege escalation и lateral movement в разрешената среда.",
+        "Използване на подходящи post-exploitation modules и extensions според задачата."
+      ] }
+    ]
   }
 ];
