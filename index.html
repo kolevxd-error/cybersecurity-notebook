@@ -211,6 +211,7 @@
             <button class="subnav-button" data-page="topic:metasploit:overview">Представлява</button>
             <button class="subnav-button" data-page="topic:metasploit:commands">Команди</button>
             <button class="subnav-button" data-page="topic:metasploit:posts">Публикации</button>
+            <button class="subnav-button" data-page="topic:metasploit:meterpreter">Meterpreter</button>
           </div>
           <button class="nav-button" data-page="cves"><span class="nav-icon">⌕</span>CVE <span class="nav-count" id="cve-count">0</span></button>
           <div class="subnav" id="cve-subnav"></div>
@@ -489,7 +490,7 @@ finally:
       return `<div class="note-list">${items.map(noteCard).join("")}</div>`;
     }
     function topicTabs() {
-      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button></div>`;
+      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button><button class="tab-button ${activeTab === "meterpreter" ? "active" : ""}" data-tab="meterpreter">Meterpreter</button></div>`;
     }
     function homePage() {
       const topics = new Map();
@@ -516,11 +517,12 @@ finally:
         const parts = currentPage.split(":"); const topic = parts[1] || "Metasploit";
         if (topic.toLocaleLowerCase("bg") === "metasploit") {
           activeTab = parts[2] || "overview";
-          breadcrumb = `Metasploit${activeTab !== "overview" ? " / " + ({ commands: "Команди", posts: "Публикации" }[activeTab] || "Представлява") : ""}`;
+          breadcrumb = `Metasploit${activeTab !== "overview" ? " / " + ({ commands: "Команди", posts: "Публикации", meterpreter: "Meterpreter" }[activeTab] || "Представлява") : ""}`;
           const type = activeTab === "commands" ? "command" : activeTab === "posts" ? "post" : "note";
-          const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit" && (item.type === type || (activeTab === "overview" && !["command", "post"].includes(item.type))));
-          const titles = { overview: ["Тук ще събираме информация за Metasploit.", "Изпрати ми обяснение или учебна бележка за Metasploit — ще я преведа на български и ще я подредя тук."], commands: ["Все още няма команди.", "Когато ми изпратиш команда, ще я добавя тук с обяснение на български, като запазя синтаксиса ѝ."], posts: ["Все още няма публикации.", "Статии, видеа и постове за Metasploit ще се събират в този раздел с линк към оригиналния източник."] };
-          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Материалите са разделени по тип, за да намираш лесно обясненията, командите и публикациите.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${TYPE_LABELS[type].toLocaleLowerCase("bg")}</p></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
+          const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit" && (activeTab === "meterpreter" ? item.section === "meterpreter" : item.section !== "meterpreter" && (item.type === type || (activeTab === "overview" && !["command", "post"].includes(item.type)))));
+          const titles = { overview: ["Тук ще събираме информация за Metasploit.", "Изпрати ми обяснение или учебна бележка за Metasploit — ще я преведа на български и ще я подредя тук."], commands: ["Все още няма команди.", "Когато ми изпратиш команда, ще я добавя тук с обяснение на български, като запазя синтаксиса ѝ."], posts: ["Все още няма публикации.", "Статии, видеа и постове за Metasploit ще се събират в този раздел с линк към оригиналния източник."], meterpreter: ["Все още няма материали за Meterpreter.", "Материалите за Meterpreter ще се показват отделно в този раздел."] };
+          const countLabel = activeTab === "meterpreter" ? "материала" : TYPE_LABELS[type].toLocaleLowerCase("bg");
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Обясненията, командите, публикациите и материалите за Meterpreter са подредени в отделни раздели.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${countLabel}</p></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
         } else {
           breadcrumb = topic;
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg"));
