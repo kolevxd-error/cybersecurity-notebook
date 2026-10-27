@@ -242,6 +242,7 @@
   </dialog>
   <script src="metasploit-notes.js?v=95d9250"></script>
   <script src="cloud-notes.js?v=1"></script>
+  <script src="web-notes.js?v=1"></script>
   <script>
     // Бележките, подадени в чата, се съхраняват в source файловете на проекта.
     const CHAT_ENTRIES = [{
@@ -382,7 +383,7 @@ finally:
           { label: "Допълнителна GitHub препратка от YARA rule", url: "https://github.com/xaitax/CVE-2024-21413-Microsoft-Outlook-Remote-Code-Execution-Vulnerability/" }
         ] }
       ]
-    }, ...(window.METASPLOIT_ENTRIES || []), ...(window.CLOUD_ENTRIES || [])];
+    }, ...(window.METASPLOIT_ENTRIES || []), ...(window.CLOUD_ENTRIES || []), ...(window.WEB_ENTRIES || [])];
     const TYPE_LABELS = { note: "Бележка", command: "Команда", post: "Публикация", cve: "CVE" };
     const TYPE_ICONS = { note: "▧", command: "⌘", post: "▤", cve: "⌕" };
     const entries = CHAT_ENTRIES;
@@ -484,7 +485,7 @@ finally:
       document.getElementById("topics-nav").innerHTML = [...topicCounts].map(([topic, count]) => `<button class="nav-button" data-page="topic:${escapeHtml(topic)}"><span class="nav-icon">◌</span>${escapeHtml(topic)} <span class="nav-count">${count}</span></button>`).join("");
       const cves = [...new Map(entries.filter(isCve).map(item => [cveId(item), item])).values()];
       document.getElementById("cve-subnav").innerHTML = cves.map(item => `<button class="subnav-button" data-page="cve:${encodeURIComponent(cveId(item))}">${escapeHtml(cveId(item))}</button>`).join("");
-      document.querySelectorAll("[data-page]").forEach(button => button.classList.toggle("active", button.dataset.page === currentPage || (currentPage.startsWith("topic:metasploit:") && button.dataset.page === "topic:metasploit") || (currentPage.startsWith("cve:") && button.dataset.page === "cves")));
+      document.querySelectorAll("[data-page]").forEach(button => button.classList.toggle("active", button.dataset.page === currentPage || (currentPage.startsWith("topic:metasploit:") && button.dataset.page === "topic:metasploit") || (currentPage.startsWith("topic:Web:") && button.dataset.page === "topic:Web") || (currentPage.startsWith("cve:") && button.dataset.page === "cves")));
       document.querySelectorAll("[data-page]").forEach(button => button.onclick = () => { currentPage = button.dataset.page; searchQuery = ""; document.getElementById("search").value = ""; document.getElementById("sidebar").classList.remove("open"); render(); });
     }
     function noteCard(item) {
@@ -498,8 +499,13 @@ finally:
       if (!items.length) return `<div class="empty-state"><div class="empty-icon">⌘</div><h3>${searchQuery ? "Няма намерени резултати" : escapeHtml(emptyTitle)}</h3><p>${searchQuery ? "Промени думата за търсене или избери друг раздел." : escapeHtml(emptyCopy)}</p></div>`;
       return `<div class="note-list">${items.map(noteCard).join("")}</div>`;
     }
-    function topicTabs() {
-      return `<div class="tabs" role="tablist"><button class="tab-button ${activeTab === "overview" ? "active" : ""}" data-tab="overview">Представлява</button><button class="tab-button ${activeTab === "commands" ? "active" : ""}" data-tab="commands">Команди</button><button class="tab-button ${activeTab === "meterpreter" ? "active" : ""}" data-tab="meterpreter">Meterpreter</button><button class="tab-button ${activeTab === "posts" ? "active" : ""}" data-tab="posts">Публикации</button></div>`;
+    const TOPIC_TABS = {
+      Metasploit: [{ id: "overview", label: "Представлява" }, { id: "commands", label: "Команди" }, { id: "meterpreter", label: "Meterpreter" }, { id: "posts", label: "Публикации" }],
+      Web: [{ id: "dns", label: "DNS" }, { id: "http", label: "HTTP / HTTPS" }, { id: "url", label: "URL" }, { id: "requests", label: "Заявки" }, { id: "responses", label: "Отговори и статуси" }, { id: "headers-cookies", label: "Headers и Cookies" }, { id: "architecture", label: "Устройство на сайтовете" }, { id: "html-js", label: "HTML и JavaScript" }, { id: "vulnerabilities", label: "Уеб уязвимости" }]
+    };
+    function topicTabs(topic, selectedTab) {
+      const tabs = TOPIC_TABS[topic] || [];
+      return `<div class="tabs" role="tablist">${tabs.map(tab => `<button class="tab-button ${selectedTab === tab.id ? "active" : ""}" data-tab-topic="${escapeHtml(topic)}" data-tab="${escapeHtml(tab.id)}" role="tab" aria-selected="${selectedTab === tab.id}">${escapeHtml(tab.label)}</button>`).join("")}</div>`;
     }
     function homePage() {
       const topics = new Map();
@@ -531,7 +537,14 @@ finally:
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "metasploit" && (activeTab === "meterpreter" ? item.section === "meterpreter" : item.section !== "meterpreter" && (item.type === type || (activeTab === "overview" && !["command", "post"].includes(item.type)))));
           const titles = { overview: ["Тук ще събираме информация за Metasploit.", "Изпрати ми обяснение или учебна бележка за Metasploit — ще я преведа на български и ще я подредя тук."], commands: ["Все още няма команди.", "Когато ми изпратиш команда, ще я добавя тук с обяснение на български, като запазя синтаксиса ѝ."], posts: ["Все още няма публикации.", "Статии, видеа и постове за Metasploit ще се събират в този раздел с линк към оригиналния източник."], meterpreter: ["Все още няма материали за Meterpreter.", "Материалите за Meterpreter ще се показват отделно в този раздел."] };
           const countLabel = activeTab === "meterpreter" ? "материала" : TYPE_LABELS[type].toLocaleLowerCase("bg");
-          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Обясненията, командите, публикациите и материалите за Meterpreter са подредени в отделни раздели.</p></div>${topicTabs()}<div class="content-toolbar"><p>${list.length} ${countLabel}</p></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Metasploit</h1><p>Обясненията, командите, публикациите и материалите за Meterpreter са подредени в отделни раздели.</p></div>${topicTabs("Metasploit", activeTab)}<div class="content-toolbar"><p>${list.length} ${countLabel}</p></div>${listMarkup(list, titles[activeTab][0], titles[activeTab][1])}`;
+        } else if (topic.toLocaleLowerCase("bg") === "web") {
+          const activeSection = parts[2] || "dns";
+          activeTab = activeSection;
+          const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === "web" && item.section === activeSection);
+          const tab = (TOPIC_TABS.Web || []).find(item => item.id === activeSection);
+          breadcrumb = `Web${tab ? ` / ${tab.label}` : ""}`;
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>Web</h1><p>Основи на DNS и уеб комуникацията, подредени по теми.</p></div>${topicTabs("Web", activeSection)}<div class="content-toolbar"><p>${list.length} ${list.length === 1 ? "материал" : "материала"}</p></div>${listMarkup(list, "Тук още няма материали.", "Материалите за този раздел ще се показват тук.")}`;
         } else {
           breadcrumb = topic;
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg"));
@@ -551,8 +564,8 @@ finally:
       }
       document.getElementById("breadcrumb").innerHTML = escapeHtml(breadcrumb);
       content.innerHTML = html;
-      content.querySelectorAll("[data-tab]").forEach(button => button.onclick = () => { activeTab = button.dataset.tab; currentPage = `topic:metasploit:${activeTab}`; render(); });
-      content.querySelectorAll("[data-open-topic]").forEach(button => button.onclick = () => { const topic = button.dataset.openTopic; currentPage = `topic:${topic}${topic.toLocaleLowerCase("bg") === "metasploit" ? ":overview" : ""}`; activeTab = "overview"; render(); });
+      content.querySelectorAll("[data-tab]").forEach(button => button.onclick = () => { activeTab = button.dataset.tab; currentPage = `topic:${button.dataset.tabTopic}:${activeTab}`; render(); });
+      content.querySelectorAll("[data-open-topic]").forEach(button => button.onclick = () => { const topic = button.dataset.openTopic; const key = topic.toLocaleLowerCase("bg"); const firstTab = key === "metasploit" ? "overview" : key === "web" ? "dns" : ""; currentPage = `topic:${topic}${firstTab ? `:${firstTab}` : ""}`; activeTab = firstTab || "overview"; render(); });
       content.querySelectorAll("[data-page]").forEach(button => button.onclick = () => { currentPage = button.dataset.page; render(); });
       content.querySelectorAll("[data-image-preview]").forEach(button => button.onclick = () => {
         const viewer = document.getElementById("image-viewer");
