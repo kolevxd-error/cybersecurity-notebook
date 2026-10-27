@@ -37,6 +37,7 @@
     .brand-caption { margin-top: 3px; color: var(--muted); font-size: 13px; }
     .nav-label { padding: 0 10px; margin: 0 0 7px; color: #a18a91; font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
     .nav-list { display: grid; gap: 4px; }
+    .topic-nav { display: grid; gap: 4px; }
     .nav-button, .subnav-button { border: 0; width: 100%; cursor: pointer; background: transparent; color: #c7b8bd; text-align: left; display: flex; align-items: center; gap: 10px; border-radius: 9px; transition: .16s ease; }
     .nav-button { padding: 10px 11px; font-size: 15px; }
     .nav-button:hover, .subnav-button:hover { background: #281b20; color: var(--text); }
@@ -213,6 +214,7 @@
             <button class="subnav-button" data-page="topic:metasploit:meterpreter">Meterpreter</button>
             <button class="subnav-button" data-page="topic:metasploit:posts">Публикации</button>
           </div>
+          <div class="topic-nav" id="topics-nav"></div>
           <button class="nav-button" data-page="cves"><span class="nav-icon">⌕</span>CVE <span class="nav-count" id="cve-count">0</span></button>
           <div class="subnav" id="cve-subnav"></div>
           <button class="nav-button" data-page="all-posts"><span class="nav-icon">▤</span>Всички публикации <span class="nav-count" id="posts-count">0</span></button>
@@ -239,6 +241,7 @@
     <figcaption id="image-viewer-caption"></figcaption>
   </dialog>
   <script src="metasploit-notes.js?v=95d9250"></script>
+  <script src="cloud-notes.js?v=1"></script>
   <script>
     // Бележките, подадени в чата, се съхраняват в source файловете на проекта.
     const CHAT_ENTRIES = [{
@@ -379,7 +382,7 @@ finally:
           { label: "Допълнителна GitHub препратка от YARA rule", url: "https://github.com/xaitax/CVE-2024-21413-Microsoft-Outlook-Remote-Code-Execution-Vulnerability/" }
         ] }
       ]
-    }, ...(window.METASPLOIT_ENTRIES || [])];
+    }, ...(window.METASPLOIT_ENTRIES || []), ...(window.CLOUD_ENTRIES || [])];
     const TYPE_LABELS = { note: "Бележка", command: "Команда", post: "Публикация", cve: "CVE" };
     const TYPE_ICONS = { note: "▧", command: "⌘", post: "▤", cve: "⌕" };
     const entries = CHAT_ENTRIES;
@@ -473,6 +476,12 @@ finally:
       document.getElementById("cve-count").textContent = entries.filter(isCve).length;
       document.getElementById("posts-count").textContent = entries.filter(item => item.type === "post").length;
       document.getElementById("notes-count").textContent = entries.filter(item => !isCve(item)).length;
+      const topicCounts = new Map();
+      entries.filter(item => !isCve(item) && item.topic).forEach(item => {
+        const topic = niceTopic(item.topic);
+        if (topic.toLocaleLowerCase("bg") !== "metasploit") topicCounts.set(topic, (topicCounts.get(topic) || 0) + 1);
+      });
+      document.getElementById("topics-nav").innerHTML = [...topicCounts].map(([topic, count]) => `<button class="nav-button" data-page="topic:${escapeHtml(topic)}"><span class="nav-icon">◌</span>${escapeHtml(topic)} <span class="nav-count">${count}</span></button>`).join("");
       const cves = [...new Map(entries.filter(isCve).map(item => [cveId(item), item])).values()];
       document.getElementById("cve-subnav").innerHTML = cves.map(item => `<button class="subnav-button" data-page="cve:${encodeURIComponent(cveId(item))}">${escapeHtml(cveId(item))}</button>`).join("");
       document.querySelectorAll("[data-page]").forEach(button => button.classList.toggle("active", button.dataset.page === currentPage || (currentPage.startsWith("topic:metasploit:") && button.dataset.page === "topic:metasploit") || (currentPage.startsWith("cve:") && button.dataset.page === "cves")));
