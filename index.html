@@ -535,7 +535,7 @@ finally:
         } else {
           breadcrumb = topic;
           const list = entries.filter(item => !isCve(item) && (item.topic || "").toLocaleLowerCase("bg") === topic.toLocaleLowerCase("bg"));
-          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>${escapeHtml(topic)}</h1><p>Бележки, команди и публикации по тази тема.</p></div><div class="content-toolbar"><p>${list.length} материала</p></div>${listMarkup(list, "Тук още няма материали.", `Изпрати ми информация за ${topic} в чата, за да я добавя в този раздел.`)}`;
+          html = `<div class="page-head"><div class="eyebrow">ТЕМА</div><h1>${escapeHtml(topic)}</h1><p>Подредени обяснения и учебни материали по темата.</p></div><div class="content-toolbar"><p>${list.length} материала</p></div>${listMarkup(list, "Тук още няма материали.", `Изпрати ми информация за ${topic} в чата, за да я добавя в този раздел.`)}`;
         }
       } else if (currentPage === "cves") { breadcrumb = "CVE"; html = cvePage(); }
       else if (currentPage.startsWith("cve:")) {
